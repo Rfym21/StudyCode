@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>单例模式</title>
+</head>
+
+<body>
+  <script>
+    "use static"
+    // 对象字面量
+    const duck = {
+      nickname: '黄黄',
+      singsing: function () {
+        console.log('嘎嘎');
+      }
+    }
+    // 传统的面向对象 原型式的面向对象
+    // 构造函数
+    function Duck(nickname) {
+      this.nickname = nickname
+    }
+    Duck.prototype.singsing = function () {
+      console.log('嘎嘎嘎');
+    }
+    // 实例
+    // proto
+    // protitype.constructor(对象原型)
+    // js没有类,用函数大写，以new(运算符)创建，执行函数，同时函数的this指向实例
+    const yw = new Duck('鸭王')
+    console.log(yw.nickname)
+    yw.singsing();
+  </script>
+</body>
+
+</html>

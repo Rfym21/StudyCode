@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/weui/2.6.12/style/weui.min.css">
+</head>
+
+<body>
+  <!-- navbar -->
+  <div class="weui-navbar">
+    <a href="#" class="weui-navbar__item weui-bar__item_on">推荐</a>
+    <a href="#" class="weui-navbar__item">热点</a>
+    <a href="#" class="weui-navbar__item">娱乐</a>
+  </div>
+  <!-- searchbar -->
+  <div class="weui-search-bar" id="search_bar">
+
+    <form class="weui-search-bar__form">
+      <div class="weui-search-bar__box">
+        <i class="weui-icon-search"></i>
+        <input type="search" class="weui-search-bar__input" id="search_input" placeholder="搜索">
+        <a href="#" class="weui-icon-clear"></a>
+      </div>
+
+      <label id="search_text" for="search_input" class="weui-search-bar__label">
+        <i class="weui-icon-search"></i>
+        <span>搜索</span>
+      </label>
+    </form>
+    <a href="" class="weui-search-bar__cancel-btn">取消</a>
+  </div>
+  <script>
+
+    const tabs = document.querySelectorAll('.weui-navbar__item')
+    const navbar = document.querySelector('.weui-navbar')
+    const searchInput = document.querySelector('#search_input')
+    const searchBar = document.querySelector('.weui-search-bar')
+    document
+      .querySelector('.weui-search-bar__label')
+      .addEventListener('click', function () {
+        searchBar.classList.add('weui-search-bar_focusing')
+      })
+    searchInput.addEventListener('focus', function (event) {
+      console.log('聚焦了')
+    })
+
+    // 对父元素进行事件监听，将对多个子元素的监听改为父元素的监听，优化了内存,监听事件是由内到外
+    // tabs[0].addEventListener('click',function(){
+    // })
+    navbar.addEventListener('click', function (event) {
+      const target = event.target
+      if (target.nodeName == 'A') {
+        // 阻止默认事件
+        event.preventDefault();
+        if (target.classList.contains('weui-bar__item_on')) {
+          return
+        }
+        // console.log(i)
+        document
+          .querySelector('.weui-bar__item_on')
+          .classList
+          .remove('weui-bar__item_on')
+        target.classList.add('weui-bar__item_on')
+      }
+    });
+    // for (let i = 0; i < tabs.length; i++) {
+    //   // 异步事件
+    //   // (function (i) {
+    //   tabs[i].addEventListener('click', function () {
+    //     if (this.classList.contains('weui-bar__item_on')) {
+    //       return
+    //     }
+    //     // console.log(i)
+    //     document
+    //       .querySelector('.weui-bar__item_on')
+    //       .classList
+    //       .remove('weui-bar__item_on')
+    //       this.classList.add('weui-bar__item_on')
+    //   })
+    //   // })(i)
+
+    // }
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盒子模型</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .clearfix::after,
+    .clearfix::before {
+      content: '';
+      display: table;
+    }
+
+
+    .row {
+      color: red;
+      /* 超出部分隐藏 */
+      overflow: hidden;
+    }
+
+    /* 
+    盒子模型 一个盒子在页面上的占位置
+    content内容 + padding(内边距) + margin(外边距) + border(边框)
+    */
+    .col {
+      /* 两列式布局 */
+      border: 1px solid hotpink;
+      /* 修改盒模型的使用方式*/
+      box-sizing: border-box;
+      /* border 及以内的都属于width */
+      padding: 5px;
+      float: left;
+      width: 50%;
+      height: 200px;
+      background-color: blue;
+    }
+
+    .col:last-child {
+      background-color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="row">
+    <div class="col">1</div>
+    <div class="col">2</div>
+  </div>
+</body>
+
+</html>

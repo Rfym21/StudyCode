@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画图形</title>
+  <style>
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: green;
+    }
+
+    .triangle {
+      border: 100px solid transparent;
+      border-left: 100px solid green;
+      width: 0;
+      height: 0;
+    }
+
+    .sector {
+      width: 0;
+      height: 0;
+      border: 100px solid transparent;
+      border-bottom-color: green;
+      border-radius: 50%;
+      /* 旋转盒子 */
+      transform: rotate(180deg);
+    }
+
+    .trapezoid {
+      width: 70px;
+      height: 0;
+      border: 100px solid transparent;
+      border-top: 0;
+      border-bottom: 100px solid green;
+      border-left: 0;
+      transform: rotate(90deg);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="circle"></div>
+  <div class="triangle"></div>
+  <div class="sector"></div>
+  <div class="trapezoid"></div>
+</body>
+
+</html>

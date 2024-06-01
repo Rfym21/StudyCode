@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "stories/index",
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/stroies/index",
+    "pages/stories"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "抚州路虎4S店",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

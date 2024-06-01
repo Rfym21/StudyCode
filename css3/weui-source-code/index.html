@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微信WEUI源码分析</title>
+  <style>
+    /* css reset 默认样式重置 对所有浏览器都适用 */
+    * {
+      margin: 0;
+      padding: 0;
+      /* 
+      轮廓样式：outline
+      例如输入框被点击时，输入框会被添加轮廓
+      不同浏览器的轮廓样式不同
+      outline: 5px solid orange; 
+      */
+      outline: 0;
+    }
+
+    body,
+    html {
+      /* 页面高度占据100% */
+      height: 100%;
+      /* 
+      -webkit-tap-highlight-color：移动端点按时的高亮颜色
+      transparent：设置为透明
+       */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      /* 
+      字体默认从第一个开始应用，若不存在则跳过，选择下一个字体
+      为苹果用户优化 支持苹果特殊字体
+       */
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .page,
+    body {
+      background-color: #ededed;
+    }
+
+    .page {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      /* 设置page高度为一屏高度，用y轴滚动条(overflow-y)显示 */
+      overflow-y: auto;
+      /* 使得页面滚动更丝滑 */
+      -webkit-overflow-scrolling: touch;
+      /* overflow-scrolling: touch; */
+    }
+
+    .page__hd {
+      padding: 40px;
+    }
+
+    .page__title {
+      text-align: left;
+      margin-bottom: 15px;
+      /* 默认16px */
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .page__desc {
+      margin-top: 4px;
+      text-align: left;
+      font-size: 14px;
+      color: rgba(0, 0, 0, .55);
+    }
+
+    .button-sp-area {
+      margin: 15px auto;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .weui-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 12px 24px;
+      width: 184px;
+      font-weight: 500;
+      font-size: 17px;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+      line-height: 1.4118em;
+      border-radius: 8px;
+      /* 
+      weblit 代表android chrome apple内核
+      user-select 属于比较新的属性
+      -webkit-user-select 实验性属性 在新的手机上已支持
+      */
+      -webkit-user-select: none;
+      /* 防止长按出现选中现象，设置该样式为none */
+      user-select: none;
+    }
+
+    /* 
+    css高级选择器 兄弟选择器
+    只选择兄弟元素里后一个元素
+    第一个元素前面没有兄弟元素则不会被选择
+     */
+    .weui-btn+.weui-btn {
+      margin-top: 16px;
+    }
+
+    .weui-btn_primary {
+      background-color: #07c160;
+    }
+
+    .weui-btn_default{
+      color: rgba(0, 0, 0, .9);
+      background-color: rgba(0, 0, 0, .5);
+    }
+
+    .weui-btn_warn {
+      background-color: #fa5151;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!--
+       # 先写结构 将页面分成上下两个区域按照作用去分区 用简单的单词命名
+          - 解决Class命名耗时 了解区块的结构 分上下左右区域命名 防止命名导致浪费时间
+    -->
+
+    <div class="page__hd">
+      <!-- 头部内容 -->
+      <div class="page__title">
+        Button
+      </div>
+      <!-- 这里用p比div更适合，使得页面具有语义化，p是文章的一部分，而这里的实际意义是解释Button的功能 -->
+      <p class="page__desc">
+        按钮
+      </p>
+    </div>
+
+    <div class="page__bd">
+      <div class="button-sp-area">
+        <a href="#" class="weui-btn weui-btn_primary">主要操作</a>
+        <a href="#" class="weui-btn weui-btn_default">次要操作</a>
+        <a href="#" class="weui-btn weui-btn_warn">警告</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
