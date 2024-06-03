@@ -1,62 +1,42 @@
-/**index.wxss**/
-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+.cards {
+  padding: 32rpx;
 }
-.scrollarea {
-  flex: 1;
-  overflow-y: hidden;
+.card {
+  background: #fff;
+  margin-bottom: 32rpx;
+  transition: .5s all;
 }
-
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #aaa;
-  width: 80%;
+.card image {
+  position: relative;
+  height: 36vh;
 }
-
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.card .content {
+  padding:48rpx 48rpx 64rpx;
 }
-
-.usermotto {
-  margin-top: 200px;
+.card .header {
+  font-size: 48rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+  margin-bottom: 48rpx;
 }
-
-.avatar-wrapper {
-  padding: 0;
-  width: 56px !important;
-  border-radius: 8px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+.card .sub-header {
+  font-size: 32rpx;
+  letter-spacing: 6rpx;
+  text-transform: uppercase;
 }
-
-.avatar {
+/* .card .sub-header::before {
+  content: "元素开始之前"
+} */
+.card .sub-header::after {
+  content: "";
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 80rpx;
+  border-bottom: 2px solid #000;
+  padding-bottom: 16rpx;
 }
 
-.nickname-wrapper {
-  display: flex;
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  border-top: .5px solid rgba(0, 0, 0, 0.1);
-  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
-  color: black;
-}
-
-.nickname-label {
-  width: 105px;
-}
-
-.nickname-input {
-  flex: 1;
+.card .descripyion, .card .meta {
+  margin-bottom: 16rpx;
+  color: rgba(00, 00, 00, .85);
+  font-size: 32rpx;
 }

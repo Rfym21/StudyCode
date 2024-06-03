@@ -1,12 +1,11 @@
-// stories/index.js
+// pages/vehicles/show.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    motto: 'Hello World',
-    model: '揽胜行政加长',
+
   },
 
   /**

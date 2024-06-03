@@ -1,4 +1,4 @@
-// pages/stroies/index.js
+// pages/stories/index.js
 Page({
 
   /**
