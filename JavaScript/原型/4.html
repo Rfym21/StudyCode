@@ -1,0 +1,62 @@
+<script>
+  // let obj = {}
+  // function Person() {
+  //   var obj = {}
+
+
+  // }
+
+  // let p = new Person()
+
+  // p.__proto__ === Person.prototype
+
+  // [[Prototype]]  ===  __proto__    //隐式原型
+
+  function Person() {
+    this.name = 'Tom'
+  }
+  Person.age = 18
+  let p = new Person()
+  console.log(p.age);
+
+  {   // 先找自身，再去隐式原型上查找
+    name: 'Tom'
+    // __proto__: Person.prototype
+  }
+
+  //------------------------------------------------------------------------
+
+  Grand.prototype.LastName = '张'
+  function Grand() {
+    this.name = '三'
+  }
+
+  Father.prototype = new Grand()
+  function Father() {
+    this.age = 40
+  }
+
+  Son.prototype = new Father()
+  function Son() {
+    this.like = 'coding'
+  }
+
+  console.log(Son.like);
+  console.log(Son.age);
+  console.log(Son.LastName);
+
+
+  // {
+  //   like: 'coding',
+  //     __proto__: Son.prototype == new Father() : {
+  //     __proto__: Father.prototype == new Grand(): {
+  //       __proto__: Grand.prototype == new Object(): {
+  //         __proto__: Object.prototype: {
+  //           __proto__: null
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+</script>
