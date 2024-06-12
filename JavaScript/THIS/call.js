@@ -2,13 +2,13 @@ var obj = {
   a: 1
 }
 
-function foo() {
-  console.log(this.a);
+function foo(x, y) {
+  return (this.a + x + y);
 }
 
 // foo.call(obj)
 
-Function.prototype.mycall = function () {
+Function.prototype.myCall = function () {
   // 拿到foo
   // 将foo引用到obj上
   // 让obj触发foo
@@ -33,5 +33,5 @@ Function.prototype.mycall = function () {
   return res //返回foo的执行结果
 }
 
-let res = foo.mycall(obj, 4, 5)
+let res = foo.myCall(obj, 4, 5)
 console.log(res);
