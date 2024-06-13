@@ -11,7 +11,7 @@
 
 <body>
 
-  <img data-price="20" data-src="https://img.36krcdn.com/20190808/v2_1565254363234_img_jpg">
+  <img data-src="https://img.36krcdn.com/20190808/v2_1565254363234_img_jpg">
   <img data-src="https://img.36krcdn.com/20190905/v2_1567641293753_img_png">
   <img data-src="https://img.36krcdn.com/20190905/v2_1567640518658_img_png">
   <img data-src="https://img.36krcdn.com/20190905/v2_1567642423719_img_000">
@@ -29,13 +29,13 @@
     function loadImage() {
       // 判断是否在可视区域
       let screenHeight = document.documentElement.clientHeight    // 一屏的高度
-      let scrollTop = document.documentElement.scrollTop || document.body.scrollTop          // 滚动的高度(兼容不同浏览器)
+      let scrollTop = document.documentElement.scrollTop || document.body.scrollTop   // 滚动的高度(兼容不同浏览器)
       console.log('图片加载中...');
       for (let i = 0; i < len; i++) {
-        if (imgs[i].offsetTop < screenHeight + scrollTop) {
-          imgs[i].src = imgs[i].dataset.src
+        if (imgs[i].offsetTop < screenHeight + scrollTop) {   // 如果图片的距离html页面高度小于一屏的高度加上滚动的高度
+          imgs[i].src = imgs[i].dataset.src   // 将自定义属性data-src的值赋给src
           // console.log(imgs[i].offsetTop);
-          if (i + 1 === len) {
+          if (i + 1 === len) {   // 如果是最后一张图片，则直接移除滚动检测事件
             console.log('图片加载完毕');
             window.document.removeEventListener('scroll', throttleLayLoad)
           }
