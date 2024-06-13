@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./common.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+</head>
+
+<body>
+
+  <img data-price="20" data-src="https://img.36krcdn.com/20190808/v2_1565254363234_img_jpg">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567641293753_img_png">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567640518658_img_png">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567642423719_img_000">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567642425030_img_000">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567642425101_img_000">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567642425061_img_000">
+  <img data-src="https://img.36krcdn.com/20190904/v2_1567591358070_img_jpg">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567641974410_img_000">
+  <img data-src="https://img.36krcdn.com/20190905/v2_1567641974454_img_000">
+
+
+  <script>
+    const imgs = document.querySelectorAll('img')
+    const len = imgs.length
+    function loadImage() {
+      // 判断是否在可视区域
+      let screenHeight = document.documentElement.clientHeight    // 一屏的高度
+      let scrollTop = document.documentElement.scrollTop || document.body.scrollTop          // 滚动的高度(兼容不同浏览器)
+      console.log('图片加载中...');
+      for (let i = 0; i < len; i++) {
+        if (imgs[i].offsetTop < screenHeight + scrollTop) {
+          imgs[i].src = imgs[i].dataset.src
+          // console.log(imgs[i].offsetTop);
+          if (i + 1 === len) {
+            console.log('图片加载完毕');
+            window.document.removeEventListener('scroll', throttleLayLoad)
+          }
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadImage)    // 页面加载完毕后加载图片
+
+    const throttleLayLoad = _.throttle(loadImage, 500)    // 节流
+    window.document.addEventListener('scroll', throttleLayLoad)
+  </script>
+</body>
+
+</html>
