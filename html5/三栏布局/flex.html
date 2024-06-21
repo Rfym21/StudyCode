@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>弹性三栏布局</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .page {
+      display: flex;
+      height: 500px;
+    }
+
+    .left,
+    .right {
+      width: 200px;
+      height: 500px;
+      background-color: green;
+    }
+
+    .content {
+      flex: 1;
+      order: 1;
+      height: 500px;
+      background-color: pink;
+    }
+
+    .right {
+      order: 2;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+    <div class="content">主要内容</div>
+    <div class="left">广告位</div>
+    <div class="right">广告位</div>
+
+  </div>
+</body>
+
+</html>

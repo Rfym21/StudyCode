@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .page {
+      display: table;
+      /* 单元大小由表格决定，不再由浏览器决定 */
+      table-layout: fixed;
+      width: 100vw;
+      height: 500px;
+    }
+
+    .page>div {
+      /* 表格单元 */
+      display: table-cell;
+    }
+
+    .left,
+    .right {
+      width: 200px;
+      height: 500px;
+      background-color: green;
+    }
+
+    .content {
+      height: 500px;
+      /* 占据表格剩余的100% */
+      width: 100%;
+      background-color: pink;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="left">广告位</div>
+    <div class="content">主要内容</div>
+    <div class="right">广告位</div>
+  </div>
+</body>
+
+</html>

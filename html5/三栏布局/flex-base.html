@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>弹性布局</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    ul li {
+      list-style: none;
+      width: 200px;
+      height: 50px;
+      /*
+      等比放大 
+      flex-grow: 1;
+      */
+
+      /* 
+      父容器空间不够时是否收缩 0/1 
+      flex-shrink: 0;
+      */
+
+      /* grow shrink 大小 */
+      flex: 1 1 200px;
+
+    }
+
+    ul {
+      display: flex;
+      width: 700px;
+    }
+  </style>
+</head>
+
+<body>
+  <ul>
+    <li style="background-color: green;">1</li>
+    <li style="background-color: pink;">2</li>
+    <li style="background-color: orange;">3</li>
+  </ul>
+</body>
+
+</html>
