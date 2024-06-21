@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="wrap">
+    <button id="btn"></button>
+  </div>
+  <script>
+    const warp = document.getElementById('wrap')
+    const btn = document.getElementById('btn')
+    const list = new WeakMap()
+    list.set(btn, 1)
+    btn.addEventListener('click', () => {
+      warp.removeChild(btn)
+    })
+  </script>
+</body>
+
+</html>
