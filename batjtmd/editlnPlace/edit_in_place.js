@@ -6,7 +6,7 @@
  * @author Rfym21
  * @date 2024/7/1
  */
-function EditInPlace(storageKey,container, value = '这个家伙很懒，什么都没留下') {
+function EditInPlace(storageKey, container, value = '这个家伙很懒，什么都没留下') {
   this.storageKey = storageKey
   this.container = container;
   this.value = value
@@ -94,5 +94,26 @@ EditInPlace.prototype = {
     this.convertToText()
     // localStorage
     localStorage.setItem(this.storageKey, this.value)
+    this.saveData()
+  },
+  saveData: function () {
+    let value = this.value
+    // restful = url定义方式 + method
+    // GET读 POST创建 PUT更新 PATCH局部更新 DELETE删除
+    // 看到这个URL就知道是什么资源
+    // 修改资源 GET
+    fetch('http://localhost:3001/users/1', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        signature: value
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+      })
   }
 }

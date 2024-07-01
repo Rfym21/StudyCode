@@ -13,10 +13,23 @@
 
   <script src="./edit_in_place.js"></script>
   <script>
+
     const SIGNATURE = 'signature'
-    const signature = localStorage.getItem(SIGNATURE) || '这个家伙很懒，什么都没留下'
-    // 封装能力 函数、类、复用
-    new EditInPlace(SIGNATURE, document.getElementById('signature'), signature)
+    // JS是单线程的
+    // 碰到耗时性任务,先放入event loop(事件循环机制)
+    // setTimeout 事件监听 耗时性的任务(fetch,ajax,定时任务)、查数据库
+    fetch('http://localhost:3001/users/1')
+      .then(res => res.json())
+      .then(data => {
+        // console.log(data)
+        const { signature } = data
+        const stoSignature = localStorage.getItem(SIGNATURE)
+        if (signature !== stoSignature) {
+          localStorage.setItem(SIGNATURE, signature)
+        }
+        // 封装能力 函数、类、复用
+        new EditInPlace(SIGNATURE, document.getElementById('signature'), signature)
+      })
   </script>
 
 </body>
