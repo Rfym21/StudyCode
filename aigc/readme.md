@@ -1,0 +1,61 @@
+# AI全栈开发
+
+- AI全栈
+    - 前端: frontend
+        - bootstrap css框架 做PC项目可以快速完成页面开发
+        - container row col 页面的布局
+        - html5 表单增强
+            - placeholder 输入框提示(提高用户体验)
+            - required 必填项
+        - 前后端交接
+            - 前后端分离
+            - 后端 再localhost:3000/logo logo生成的接口
+            - 前后端数据交换的标准是JSON
+              - JSON key value 适合做数据
+            - http协议 接口文档
+              - POST 请求
+              - JSON格式的字符串
+            - 请求行 url method http版本
+            - 请求头 Content-Type cookie token ...
+            - 请求体 
+    - 后端: backend
+        - 提供路由,用户可以从哪里来?
+          - 实例化router对象 new Router
+          - method + path /logo 路径对象
+          - 函数ctx
+          - app.use(router.routes()) 挂载一下
+    - postman
+        - 前后端分离
+        - http/router/测试接口的可用性
+        - http 请求模拟工具
+            - 下拉Method 填写url
+            - 请求体
+            - 测试成功
+    - nodemon
+        - npm i -g nodemon 全局安装
+        - nodemon main.mjs
+    - @koa/bodyParser
+        - node 这种后端开发,是一个个服务慢慢挂载的方式来实现的
+        - post 请求体接受 @koa/bodyParser
+        - 挂载 app.use
+    - 后端开发成功
+        - :3000/logo logo的JSON数据返回
+        - 接口开发任务完成
+        - 前端注重用户体验,后端稳定性try(){}catch(error){}
+        - status 200 => 成功
+        - 返回JSON数据
+    - 跨域
+        - http://localhost:5500 前端
+        - http://localhost:3000 后端
+        - 域名(淘宝 PDD) 端口不一样(不同的服务)
+        - 被 CORS 同源策略 blocked
+        - @koa/cors 跨域解决
+          - app.use(cors)
+    - ai server
+- 前端为什么要学AI?
+    - AI是大势所趋,24年是中国AI元年
+    - 前端用户体验因AI带来了改变和创新 AIGC是一种用户体验
+    - coze logo 生成
+      - 传统 文件上传
+      - AIGC 文生图 dalle-3 多模态模型(文本、图片、视频、音频)
+    - gpt-4o 集合(文本、图片、视频、音频) 通往AGI之路的模型和硬件结合起来

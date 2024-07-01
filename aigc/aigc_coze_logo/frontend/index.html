@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Coze生成</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  #result img {
+    width: 128px;
+    height: 128px;
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- 布局 -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <form name="logoForm">
+
+          <div class="from-group">
+            <label for="titleInput">Bot名称</label>
+            <input name="title" type="text" id="titleInput" class="from-control" placeholder="请输入名称" required>
+          </div>
+
+          <div class="from-group">
+            <label for="descInput">Bot功能介绍</label>
+            <textarea name="desc" id="descInput" class="from-control" rows="3"></textarea>
+          </div>
+
+          <div class="from-group">
+            <button name="loginButton" type="primary" class="btn btn-primary">生成Logo</button>
+          </div>
+
+        </form>
+      </div>
+      <div class="col-md-6" id="result">
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const oForm = document.forms['logoForm']
+    oForm.addEventListener('submit', function (e) {
+      // 阻止默认submit提交
+      e.preventDefault()
+      const btn = this['loginButton']
+      btn.disabled = true
+      const title = this['title'].value.trim()
+      if (!title) { return }   // 有的设备不支持html5的required属性
+      const desc = this['desc'].value.trim()
+      // http 协议
+      // 请求行 Url: localhost:3000/logo POST
+      // 请求头
+      // 请求体 title desc
+      // 前后端交互的数据格式是JSON
+      // 输出是二进制或字符串
+
+      // es6中 key和value一样的时候可以省略value
+      let data = {
+        title,
+        desc
+      }
+
+      fetch('http://localhost:3000/logo', {
+        // 协议
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(data => {
+          btn.disabled = false
+          console.log(data)
+          if (data.status == 200) {
+            document.getElementById('result').innerHTML += ` 
+            <img src="${data.url}" alt="">
+            `
+          }
+        })
+    })
+  </script>
+</body>
+
+</html>
