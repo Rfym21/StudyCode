@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="btn">请求数据</button>
+  <ul id="ul"></ul>
+  <script>
+    const btn = document.getElementById('btn')
+    const ul = document.getElementById('ul')
+
+    // ajax
+    function getData(url) {
+      return new Promise((resolve) => {
+        // 向后端发送请求，获取到需要的数据
+        let xhr = new XMLHttpRequest()    // 创建了一个ajax实例
+        xhr.open('GET', url, 'true')     //GET协议    true/false : 异步/同步 
+        xhr.send()      // 发送请求
+        xhr.onreadystatechange = function(){    // 检测请求的每个阶段
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            resolve(xhr.responseText)
+          }
+        }
+      })
+    }
+
+    function render(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        const li = document.createElement('li')
+        li.innerText = `${arr[i].nm} --- ${arr[i].star}`
+        ul.appendChild(li)
+      }
+    }
+
+    btn.addEventListener('click', () => {
+      getData('https://mock.mengxuegu.com/mock/65a91543c4cd67421b34c898/movie/movieList')
+        .then((res) => {
+          const movieList = JSON.parse(res).movieList
+          render(movieList)
+        })
+    })
+  </script>
+</body>
+
+</html>
