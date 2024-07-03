@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise</title>
+</head>
+
+<body>
+  <!-- 对未来会发生的事情,先许下一个诺言 -->
+  <script>
+    // JS 单线程 排队执行
+    // 同步事件阻塞
+    // 异步事件 event loop
+    // 前端有很多交互,不能阻塞
+    console.log('我是一个同步任务一')
+    // 宏任务
+    setTimeout(() => {
+      // 异步代码
+      console.log('我是一个定时器一')
+      setTimeout(() => {
+        console.log('我是一个定时器四')
+      }, 2000)
+    }, 3000)
+    setTimeout(() => {
+      // 异步代码
+      console.log('我是一个定时器二')
+    }, 3000)
+    setTimeout(() => {
+      // 异步代码
+      console.log('我是一个定时器三')
+    }, 5000)
+    console.log('我是一个同步任务二')
+  </script>
+</body>
+
+</html>
