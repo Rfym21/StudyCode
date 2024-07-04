@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <span>不加防抖的输入框 </span><input type="text" id="unDebounce" placeholder="请输入需要查找的用户名">
+  </div>
+  <div>
+    <span>加防抖的输入框 </span><input type="text" id="debounce" placeholder="请输入需要查找的用户名">
+  </div>
+
+  <script>
+    // 不加防抖的输入框
+    const inputA = document.getElementById('unDebounce')
+    const inputB = document.getElementById('debounce')
+
+    function handleNameSearch(e) {
+      // console.log(e.target.value)
+      const value = e.target.value
+      fetch("http://localhost:8011/users")
+        .then(res => res.json())
+        .then(data => {
+          const users = data
+          // 数组上的新方法filter()，返回一个新数组，新数组中的元素是通过检查指定数组中符合条件的所有元素
+          const filterUsers = users.filter(user => {
+            //字符串中新方法
+            //可读性更好 es6字符串新增方法
+            return user.name.includes(value)
+            // return user.name.indexOf(value)
+          })
+          console.log(filterUsers)
+        })
+    }
+
+    function debounce(fn, delay) {
+      // 返回值必须是函数 keyup 事件触发时，返回的函数会被执行
+      return function (args) {
+        // 清除上一次的定时器
+        clearTimeout(fn.id)
+        // 创建一个新的定时器
+        // 函数是对象,id挂载在func上, func 是闭包中的自由变量
+        fn.id = setTimeout(function () {
+          fn(args)
+        }, delay)
+      }
+    }
+
+    inputA.addEventListener('keyup', handleNameSearch)
+    inputB.addEventListener('keyup', debounce(handleNameSearch, 500))
+  </script>
+</body>
+
+</html>
