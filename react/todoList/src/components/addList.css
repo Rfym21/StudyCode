@@ -1,0 +1,16 @@
+.container{
+height: 60px;
+width: auto;
+}
+
+#addInp{
+width: 400px;
+height: 50px;
+font-size: 24px;
+line-height: 40px;
+}
+#add{
+  /* background-color: #0cb9b9; */
+  width: 100px;
+  height: 55px;
+}
