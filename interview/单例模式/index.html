@@ -8,9 +8,16 @@
 </head>
 
 <body>
-  <script type="module" src="./storage.js"></script>
-  <script>
+  <!-- <script type="module">
+    import Storage from './storage.js'
     const instance = Storage.getInstance()
+  </script> -->
+
+  <script src="./old_stirage.js"></script>
+  <script>
+    const instance1 = Storage.getInstance()
+    const instance2 = Storage.getInstance()
+    console.log(instance1 === instance2)
   </script>
 </body>
 
