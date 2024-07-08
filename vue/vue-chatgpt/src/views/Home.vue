@@ -68,14 +68,17 @@ const state = reactive({
 onUpdated(() => {
   if (state.key !== '') {
     localStorage.setItem("APIkey", state.key)
-  }
+  } 
+
   const len = state.messageList.length
   const maxLen = 128
   if (len > maxLen) {
     const newList = state.messageList.slice(len - maxLen / 2 + 1)
     state.messageList = newList
   } else {
-    localStorage.setItem("messageList", JSON.stringify(state.messageList))
+    if (state.key) {
+      localStorage.setItem("messageList", JSON.stringify(state.messageList))
+    }
   }
 })
 
