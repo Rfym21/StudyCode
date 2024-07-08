@@ -68,7 +68,7 @@ const state = reactive({
 onUpdated(() => {
   if (state.key !== '') {
     localStorage.setItem("APIkey", state.key)
-  } 
+  }
 
   const len = state.messageList.length
   const maxLen = 128
@@ -170,6 +170,16 @@ const clickConfig = () => {
   state.key = ''
   localStorage.removeItem("APIkey")
   localStorage.removeItem("messageList")
+  state.messageList = [
+    {
+      role: 'system',
+      content: '你是人工智能客服,请尽可能简洁回答问题,回答的输出结果为html5格式,回答内容较长时注意换行'
+    },
+    {
+      role: 'assistant',
+      content: "你好，我是AI语言模型，我可以提供一些常用服务和信息，例如：<br><br>1. 翻译：我可以把中文翻译成英文，英文翻译成中文，还有其他一些语言翻译，比如法语、日语、西班牙语等。<br><br>2. 咨询服务：如果你有任何问题需要咨询，例如健康、法律、投资等方面，我可以尽可能为你提供帮助。<br><br>3. 闲聊：如果你感到寂寞或无聊，我们可以聊一些有趣的话题，以减轻你的压力。<br><br>请告诉我你需要哪方面的帮助，我会根据你的需求给你提供相应的信息和建议。<br>"
+    }
+  ]
 }
 
 </script>
