@@ -166,6 +166,7 @@ const clickConfig = () => {
   messageContent.value = ''
   state.key = ''
   localStorage.removeItem("APIkey")
+  localStorage.removeItem("messageList")
 }
 
 </script>
