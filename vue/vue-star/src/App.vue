@@ -8,13 +8,15 @@
     <RateOld :value="1" />
  -->
 
-    <Rate :value="score" theme="red" @update-rate="update" />
+    <!-- <Rate :value="score" theme="red" @update-rate="update" /> -->
+    <Rate_new :value="score" theme="red" @update-rate="update" />
 
   </div>
 </template>
 
 <script setup>
 // import RateOld from './components/Rate_old.vue'
+import Rate_new from './components/Rate_new.vue'
 import Rate from './components/Rate.vue'
 import { ref } from 'vue'
 
