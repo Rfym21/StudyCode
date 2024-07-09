@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let obj = {
+      name: "猪猪侠",
+      getName: function (...args) {
+        console.log(`Obj:${this} --- ${args}`)
+        console.log(this.name)
+      }
+    }
+
+    let obj2 = {
+      name: "小小怪"
+    }
+    obj.getName()
+    obj.getName.call(obj2, 1, 2)
+    obj.getName.apply(obj2, [1, 2])
+
+
+    let func = obj.getName
+    // bind 会返回一个新的函数
+    // 未来执行的时候，会以bind的第一个参数作为this
+    func.bind(obj2)()
+  </script>
+</body>
+
+</html>
