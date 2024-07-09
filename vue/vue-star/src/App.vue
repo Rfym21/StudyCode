@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import Rate from './components/Rate0.vue'
+import Rate from './components/Rate.vue'
 </script>
 
 <style lang="css" scoped></style>

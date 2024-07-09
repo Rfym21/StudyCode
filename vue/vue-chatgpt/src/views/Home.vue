@@ -15,8 +15,8 @@
         :class="`flex group px-4 py-3 rounded-lg ${item.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`">
         <div :class="item.role === 'assistant' ? 'order-2 flex flex-col' : 'order-1 flex flex-col'">
           <div class="rounded-full border-2 inline-block w-12 h-12">
-            <img :src="item.role === 'user' ? '/src/assets/user.png' : '/src/assets/robot.png'" alt=""
-              class="w-10 mx-auto my-auto rounded-full">
+            <img src="../assets/robot.png" class="w-10 mx-auto my-auto rounded-full" v-if="item.role === 'assistant'">
+            <img src="../assets/user.png" class="w-10 mx-auto my-auto rounded-full" v-if="item.role === 'user'">
           </div>
           <span class="mx-auto size-8 h-8">{{ item.role === 'assistant' ? 'Bot' : 'User' }}</span>
         </div>
