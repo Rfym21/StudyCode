@@ -1,44 +1,67 @@
 <template>
-  <div class="flex flex-col  h-screen">
+  <div class="flex flex-col  h-screen relative">
 
-    <div class="flex flex-nowrap flexed w-full items-baseline top-0 px-6 py-4 bg-gray-100">
+    <div class="nav flex flex-nowrap flexed w-full items-baseline px-3 py-2 bg-gray-100 z-10">
 
-      <div class="text-2xl font-bold">ChatGPT</div>
-      <div class="ml-4 text-sm text-gray-500">基于OpenAI的ChatGPT自然语言的模型人工智能对话</div>
-
-      <div class="ml-auto px-3 py-2 text-sm cursor-pointer hover:bg-white rounded-md" v-if="!state.isConfig"
-        @click="clickConfig()">注销</div>
+      <div class="text-xl font-bold">Chat</div>
+      <div class="ml-4 text-xs text-gray-500">自然语言模型人工智能对话</div>
+      <Button :label="state.isConfig ? '登录' : '设置'" @click="openPosition('topright')" size="small"
+        class="ml-auto px-2 py-1 text-xs" severity="contrast" outlined />
     </div>
 
     <div class="flex-1 mx-2 mt-20 mb-2">
       <div v-for="item of state.messageList.filter((v) => v.role != 'system')"
-        :class="`flex group px-4 py-3 rounded-lg ${item.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`">
+        :class="`flex group px-2 py-3 rounded-lg ${item.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`">
         <div :class="item.role === 'assistant' ? 'order-2 flex flex-col' : 'order-1 flex flex-col'">
-          <div class="rounded-full border-2 inline-block w-12 h-12">
-            <img src="../assets/robot.png" class="w-10 mx-auto my-auto rounded-full" v-if="item.role === 'assistant'">
-            <img src="../assets/user.png" class="w-10 mx-auto my-auto rounded-full" v-if="item.role === 'user'">
+          <div class="rounded-full border-2 inline-block w-8 h-8">
+            <img src="../assets/robot.png" class="w-8 mx-auto my-auto rounded-full" v-if="item.role === 'assistant'">
+            <img src="../assets/user.png" class="w-8 mx-auto my-auto rounded-full" v-if="item.role === 'user'">
           </div>
-          <span class="mx-auto size-8 h-8">{{ item.role === 'assistant' ? 'Bot' : 'User' }}</span>
+          <span class="mx-auto text-sm h-8">{{ item.role === 'assistant' ? 'Bot' : 'User' }}</span>
         </div>
         <div
-          :class="`${item.role !== 'assistant' ? 'order-1 mr-4 ml-20' : 'order-2 ml-4 mr-20'} mt-12 bg-gray-100 px-6 py-2 rounded-lg`"
-          v-html="item.content"></div>
+          :class="`${item.role !== 'assistant' ? 'order-1 mr-2 ml-4' : 'order-2 ml-2 mr-4'} mt-12 rounded-lg overflow-hidden shadow border-gray-500 shadow-gray-300 p-1`">
+          <MdPreview editorId="preview-only" :modelValue="item.content" />
+        </div>
       </div>
     </div>
 
-    <div class="sticky bottom-0 w-full p-6 pb-8 bg-gray-100">
-      <div class="mb-2 text-sm text-gray-500 ml-4">{{ state.isConfig ? "请输入API key:" : "请输入消息内容: " }}</div>
+    <div class="sticky bottom-0 w-full p-3 bg-gray-100" v-if="!state.isConfig">
+      <div class="mb-2 text-sm text-gray-500 ml-4">请输入消息内容: </div>
 
       <div class="flex">
-        <input v-model="messageContent" class="input flex-1 rounded-2xl h-12 pl-8"
-          :type="state.isConfig ? 'password' : 'text'" :placeholder="state.isConfig ? 'sk-xxxxxx' : 'Message'"
-          @keydown.enter="sandOrSave()">
-        <button class="btn ml-4 w-20 bg-black rounded-2xl h-12 text-white" @click="sandOrSave()"
-          :disabled="state.isTalking">{{ state.isConfig ? "保存" : state.isTalking ? '⬜' : '发送'
-          }}</button>
+        <input v-model="messageContent" class="input flex-1 rounded-2xl h-12 pl-8" type="text" placeholder="Message"
+          @keydown.enter="sendMessage" :disabled="state.isTalking">
+        <button class="btn ml-4 w-20 bg-black rounded-2xl h-12 text-white" @click="sendMessage"
+          :disabled="state.isTalking">{{ state.isTalking ? '⬜️' : '发送' }}</button>
       </div>
-
     </div>
+
+    <div class="sticky bottom-0 w-full p-3 bg-gray-100" v-if="state.isConfig">
+      <h1 class="text-center text-3xl text-black">请先在右上角设置信息</h1>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <Dialog v-model:visible="visible" header="编辑信息" :position="position" :modal="true" :draggable="false">
+      <span class="text-surface-500 dark:text-surface-400 block mb-8">
+        <h4 class="font-bold text-sm">API填写规范:</h4>
+        <p class="text-sm">https://api.openai.com/v1/chat/completions</p>
+        <p class="text-sm">https://api.openai.com/v1</p>
+        <h4 class="font-bold text-sm">如果你拿到的接口是上面的样子,那么APIhost就填"https://api.openai.com"</h4>
+      </span>
+      <div class="flex items-center gap-4 mb-4">
+        <label for="username" class="font-semibold w-24">API host</label>
+        <InputText id="username" class="flex-auto" autocomplete="off" v-model="state.APIhost" />
+      </div>
+      <div class="flex items-center gap-4 mb-8">
+        <label for="APIkey" class="font-semibold w-24">API key</label>
+        <InputText id="APIkey" class="flex-auto" autocomplete="off" v-model="state.APIkey" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <Button type="button" label="取消" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="保存" @click="visible = false; saveSet()" class="bg-black"></Button>
+      </div>
+    </Dialog>
 
   </div>
 </template>
@@ -46,29 +69,58 @@
 <script setup>
 import { ref, reactive, onMounted, onUpdated } from 'vue'
 import { chat } from '../libs/gpt'
+// markdown 插件
+import { MdPreview } from 'md-editor-v3'
+import 'md-editor-v3/lib/preview.css'
+// PrimeVue 组件库
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+
+
+const defaultList = [
+  {
+    role: 'assistant',
+    content: "推荐测试APIhost: https://api.chatanywhere.tech \n 测试APIkey: 凭Github账户可用免费领取一个无限额度的key\n[chatanywhere大佬Github库](https://github.com/chatanywhere/GPT_API_free)"
+  },
+  {
+    role: 'system',
+    content: `
+      1.回复的篇幅应该尽可能的长，内容尽可能的详细。
+      2. 应该从中国大陆的角度去分析问题。
+      3. 同时你的角色是专业的架构师，精通html5 css3 JavaScript node vue c/c++ java shell lua 鸿蒙应用开发 Linux后端维护 微信小程序开发师。
+      4. 能够给我专业化的指导。你对话题应该发表自己的意见。
+      5. 在回复我有关编程的相关知识时，必须给出相应的案例及注释，在遇到相对较难的知识点，你想要给出更长更详细的内容，以帮助我更好的学习。
+      6. 在案例中出现的字符串应该是中文，并且应该加入适当的注释。
+      7. 需要提供知识点出现的文档，并尽可能多主要以中文网站为主，但外语网站也行。
+      8. 当我问的问题有可能存在问题时，你应该纠正，并询问我问的问题，是你(chatgpt)认为的问题吗？
+      9. 在回答我相关内容时，你可以向我推荐其他有关联的知识点，在回复我时需要采用正式的语气。
+      10. 在回答我时严格按照我的要求，尤其是涉及到文章和短文时。
+      11. 回答编程类问题时一定要考虑周全，并严格按照我提供环境或者效果去实现。
+      12. 我提问时会尽量简短，你需要抓住我说的话里面的关键词。
+      13. 使用markdown形式回复
+      `
+  }
+]
 
 // isConfig 为true为api-key设置 false为聊天
 const state = reactive({
-  key: '',
+  APIhost: '',
+  APIkey: '',
   isConfig: true,
   isTalking: false,
-  messageList: [
-    {
-      role: 'system',
-      content: '你是人工智能客服,请尽可能简洁回答问题,回答的输出结果为html5格式,回答内容较长时注意换行'
-    },
-    {
-      role: 'assistant',
-      content: "你好，我是AI语言模型，我可以提供一些常用服务和信息，例如：<br><br>1. 翻译：我可以把中文翻译成英文，英文翻译成中文，还有其他一些语言翻译，比如法语、日语、西班牙语等。<br><br>2. 咨询服务：如果你有任何问题需要咨询，例如健康、法律、投资等方面，我可以尽可能为你提供帮助。<br><br>3. 闲聊：如果你感到寂寞或无聊，我们可以聊一些有趣的话题，以减轻你的压力。<br><br>请告诉我你需要哪方面的帮助，我会根据你的需求给你提供相应的信息和建议。<br>"
-    }
-  ]
+  messageList: defaultList
 })
 
 
 onUpdated(() => {
-  if (state.key !== '') {
-    localStorage.setItem("APIkey", state.key)
+  if (state.APIkey !== '') {
+    localStorage.setItem("APIkey", state.APIkey)
   }
+  if (state.APIhost !== '') {
+    localStorage.setItem("APIhost", state.APIhost)
+  }
+  saveSet()
 
   const len = state.messageList.length
   const maxLen = 128
@@ -76,7 +128,7 @@ onUpdated(() => {
     const newList = state.messageList.slice(len - maxLen / 2 + 1)
     state.messageList = newList
   } else {
-    if (state.key) {
+    if (state.APIkey) {
       localStorage.setItem("messageList", JSON.stringify(state.messageList))
     }
   }
@@ -84,8 +136,9 @@ onUpdated(() => {
 
 
 onMounted(() => {
-  if (localStorage.getItem('APIkey')) {
-    state.key = localStorage.getItem('APIkey')
+  if (localStorage.getItem('APIkey') && localStorage.getItem('APIhost')) {
+    state.APIkey = localStorage.getItem('APIkey')
+    state.APIhost = localStorage.getItem('APIhost')
     state.isConfig = false
   }
   if (localStorage.getItem('messageList')) {
@@ -95,97 +148,66 @@ onMounted(() => {
 
 const messageContent = ref('')
 
-const sandOrSave = function () {
-  if (!messageContent.value.length) { return }
-
-  const key = messageContent.value.trim()
-
-  if (state.isConfig) {
-    // 保存key
-    if (saveAPIkey(key)) {
-      state.isConfig = false
-    }
-    messageContent.value = ''
-  } else {
-    // 发送消息
-    sendMessage()
-  }
-
-}
-
 const sendMessage = async function () {
   const message = messageContent.value.trim()
   if (!state.isTalking) {
     try {
       state.isTalking = true
-      const messages = [
-        ...state.messageList,
-        {
-          role: 'user',
-          content: message
-        }
-      ]
-
-      const data = await chat(messages, state.key)
-
-      if (data !== false) {
-
-        state.messageList.push({
-          role: 'user',
-          content: message
-        })
-
+      state.messageList.push({
+        role: 'user',
+        content: message
+      })
+      const data = await chat(state.messageList.slice(1), state.APIhost, state.APIkey)
+      if (data !== false && data !== '') {
         state.messageList.push({
           role: 'assistant',
           content: data
         })
         console.log(state.messageList)
+      } else {
+        state.messageList.pop()
       }
-
     } catch (e) {
-
+      state.messageList.pop()
       console.log(e)
-
     } finally {
-
       state.isTalking = false
       messageContent.value = ''
-
     }
   }
 }
 
-const saveAPIkey = (APIkey) => {
-
-  localStorage.setItem('APIkey', APIkey)
-  state.key = APIkey
-  return true
-
+const saveSet = () => {
+  // localStorage.setItem('APIkey', APIkey)
+  if (state.APIkey.trim() !== '' && state.APIhost.trim() !== '') {
+    state.isConfig = false
+  } else {
+    state.isConfig = true
+  }
 }
 
 
-const clickConfig = () => {
-  state.isConfig = true
-  messageContent.value = ''
-  state.key = ''
-  localStorage.removeItem("APIkey")
+const ClearMessageHistory = () => {
   localStorage.removeItem("messageList")
-  state.messageList = [
-    {
-      role: 'system',
-      content: '你是人工智能客服,请尽可能简洁回答问题,回答的输出结果为html5格式,回答内容较长时注意换行'
-    },
-    {
-      role: 'assistant',
-      content: "你好，我是AI语言模型，我可以提供一些常用服务和信息，例如：<br><br>1. 翻译：我可以把中文翻译成英文，英文翻译成中文，还有其他一些语言翻译，比如法语、日语、西班牙语等。<br><br>2. 咨询服务：如果你有任何问题需要咨询，例如健康、法律、投资等方面，我可以尽可能为你提供帮助。<br><br>3. 闲聊：如果你感到寂寞或无聊，我们可以聊一些有趣的话题，以减轻你的压力。<br><br>请告诉我你需要哪方面的帮助，我会根据你的需求给你提供相应的信息和建议。<br>"
-    }
-  ]
+  state.messageList = defaultList
 }
 
+const position = ref('center');
+const visible = ref(false);
+
+const openPosition = (pos) => {
+  position.value = pos;
+  visible.value = true;
+}
 </script>
 
 <style lang="css" scoped>
 .input:focus {
   outline: none;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
 }
 </style>

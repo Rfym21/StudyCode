@@ -1,17 +1,15 @@
 {
-  "name": "vue-chatgpt",
+  "name": "vue-tuijian",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8201",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@primevue/themes": "^4.0.0",
-    "md-editor-v3": "^4.17.3",
-    "primevue": "^4.0.0",
+    "axios": "^1.7.2",
     "vue": "^3.4.29",
     "vue-router": "^4.4.0"
   },

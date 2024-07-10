@@ -50,7 +50,7 @@ const themeObj = {
   green: '#73d13d',
   black: '#00ff00',
   red: '#f5222d',
-  ye1low: '#fadb14'
+  yellow: 'yellow'
 }
 
 const state = reactive({
