@@ -2,7 +2,7 @@ export const chat = async (messages, APIhost,APIkey) => {
 
   var raw = JSON.stringify({
     "model": "gpt-3.5-turbo",
-    // "model": "deepseek-chat",
+    "max_tokens": 4096,
     "messages": messages
   })
 

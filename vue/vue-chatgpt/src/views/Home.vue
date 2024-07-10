@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col  h-screen relative">
+  <div class="flex flex-col  h-screen relative overflow-y-auto">
 
     <div class="nav flex flex-nowrap flexed w-full items-baseline px-3 py-2 bg-gray-100 z-10">
 
@@ -63,6 +63,7 @@
       </div>
     </Dialog>
 
+    <a name="chat"></a>
   </div>
 </template>
 
@@ -144,6 +145,7 @@ onMounted(() => {
   if (localStorage.getItem('messageList')) {
     state.messageList = JSON.parse(localStorage.getItem('messageList'))
   }
+  scrollBottom()
 })
 
 const messageContent = ref('')
@@ -157,6 +159,8 @@ const sendMessage = async function () {
         role: 'user',
         content: message
       })
+
+      scrollBottom()
       const data = await chat(state.messageList.slice(1), state.APIhost, state.APIkey)
       if (data !== false && data !== '') {
         state.messageList.push({
@@ -173,6 +177,7 @@ const sendMessage = async function () {
     } finally {
       state.isTalking = false
       messageContent.value = ''
+      scrollBottom()
     }
   }
 }
@@ -199,6 +204,14 @@ const openPosition = (pos) => {
   position.value = pos;
   visible.value = true;
 }
+
+const scrollBottom = () => {
+  location.hash = 'chat'
+  setTimeout(() => {
+    location.hash = ''
+  }, 100)
+}
+
 </script>
 
 <style lang="css" scoped>
