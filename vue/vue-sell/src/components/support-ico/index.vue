@@ -1,7 +1,5 @@
 <template>
-  <div>
     <span class="support-ico" :class="iconClass"></span>
-  </div>
 </template>
 
 <script setup>

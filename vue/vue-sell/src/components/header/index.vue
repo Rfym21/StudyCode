@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" @click="showDetail = true">
 
     <div class="content-wrapper">
       <!-- 店铺头像 -->
@@ -32,16 +32,26 @@
       <i class="bulletin-more"></i>
     </div>
 
+    <!-- 背景 -->
     <div class="background">
       <img :src="state.avatar" alt="">
     </div>
+
+    <HeaderDetail :seller="state" @hideDetail="HideDetail" v-if="showDetail" />
+
   </div>
 </template>
 
 <script setup>
 import Icon from '/src/components/support-ico/index.vue'
-import { reactive, onBeforeMount } from 'vue'
-import { getSeller } from '@/api'
+import { reactive, defineProps, watch, ref } from 'vue'
+import HeaderDetail from '/src/components/header-detail/index.vue'
+
+let showDetail = ref(false)
+const HideDetail = (status) => {
+  console.log('当前状态: ', status)
+  showDetail.value = status
+}
 
 const state = reactive({
   // 商家头像
@@ -56,20 +66,24 @@ const state = reactive({
   description: '',
   // 优惠信息
   supports: [{ type: 0, description: 'Loading...' }],
-  // 优惠类型
+  //评分
+  score: 0,
 })
 
-getSeller().then(res => {
-  const { avatar, bulletin, name, deliveryTime, description, supports } = res
+const res = defineProps({
+  seller: Object
+})
+
+watch(() => res.seller, () => {
+  const { avatar, bulletin, name, deliveryTime, description, supports } = res.seller
   // 将数据赋值给 state
   state.avatar = avatar || ''
   state.bulletin = bulletin || ''
   state.name = name || ''
   state.deliveryTime = deliveryTime || ''
   state.description = description || ''
-  state.supports = supports || []
-
-  console.log('当前State属性值: ', state)
+  state.supports = supports || [{ type: 0, description: 'Loading...' }]
+  state.score = res.seller.score || 0
 })
 
 </script>

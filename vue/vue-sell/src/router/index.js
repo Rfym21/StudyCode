@@ -15,14 +15,14 @@ const router = createRouter({
       component: () => import('../views/Goods.vue')
     },
     {
-      path: '/comments',
-      name: 'Comments',
-      component: () => import('../views/Comments.vue')
+      path: '/comment',
+      name: 'Comment',
+      component: () => import('../views/Comment.vue')
     },
     {
-      path: '/business',
-      name: 'Business',
-      component: () => import('../views/Business.vue')
+      path: '/seller',
+      name: 'Seller',
+      component: () => import('../views/Seller.vue')
     }
   ]
 })
