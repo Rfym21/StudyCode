@@ -4,7 +4,7 @@
   <div class="tab">
 
     <div class="tab-wrap">
-      <Router-link to="/goods">商品</Router-link>
+      <Router-link to="/">商品</Router-link>
     </div>
 
     <div class="tab-wrap">

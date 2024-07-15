@@ -13,11 +13,12 @@ const router = createRouter({
       name: 'Home',
       // 页面级别组件 views
       component: () => import('../views/Home.vue')
-    }, {
-      path: '/about',
-      name: 'About',
-      component: () => import('../views/About.vue')
     }
+    //, {
+    //   path: '/about',
+    //   name: 'About',
+    //   component: () => import('../views/About.vue')
+    // }
   ]
 })
 

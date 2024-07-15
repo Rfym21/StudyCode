@@ -1,32 +1,34 @@
 <template>
-  <div class="flex flex-col  h-screen relative overflow-y-auto">
-
-    <!-- 顶栏部分 -->
-    <div class="nav flex flex-nowrap flexed w-full items-center px-3 py-2 bg-gray-100 z-10">
-      <!-- <Button label="聊天列表" @click="NavVisible = true" size="small" class="mr-4 px-2 py-1 text-xs" severity="contrast"
+  <!-- 顶栏部分 -->
+  <div
+    class="nav flex flex-nowrap fixed items-center px-3 w-full py-2 bg-opacity-30 bg-white z-10 top-0 rounded-b-lg border-b-2 border-gray-300">
+    <!-- <Button label="聊天列表" @click="NavVisible = true" size="small" class="mr-4 px-2 py-1 text-xs" severity="contrast"
         outlined /> -->
-      <button class="w-12 h-10 rounded-lg hover:bg-gray-200 px-2 py-1" @click="NavVisible = true"><img
-          src="../assets/ico/nav-left.png" alt="" class=" w-8 h-8"></button>
+    <button class="w-12 h-8 rounded-lg hover:bg-gray-200 px-2" @click="NavVisible = true"><img
+        src="../assets/ico/nav-left.png" alt="" class=" w-8 h-8"></button>
 
-      <div class="text-xl font-bold flex-1 text-center">{{
-        state.model.name || 'gpt-3.5-turbo' }}</div>
+    <div class="text-xl font-bold flex-1 text-center">{{
+      state.model.name || 'gpt-3.5-turbo' }}</div>
 
-      <button class="w-12 h-10 rounded-lg hover:bg-gray-200 px-2 py-1" @click="openPosition('topright')"><img
-          src="../assets/ico/nav-right.png" alt="" class="mx-auto my-auto w-6 h-6"></button>
-      <!-- <Button :label="state.isConfig ? '登录' : '设置'" @click="openPosition('topright')" size="small"
+    <button class="w-12 h-8 rounded-lg hover:bg-gray-200 px-2 py-1" @click="openPosition('topright')"><img
+        src="../assets/ico/nav-right.png" alt="" class="mx-auto my-auto w-6 h-6"></button>
+    <!-- <Button :label="state.isConfig ? '登录' : '设置'" @click="openPosition('topright')" size="small"
         class="ml-2 px-2 py-1 text-xs" severity="contrast" outlined /> -->
-    </div>
-    <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+  </div>
+  <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
-    <!-- 中间信息渲染区域 -->
-    <div class="flex-1 mx-2 mt-20 mb-2">
-      <div v-for="item of state.messageList[state.messagesIndex].messages.filter((v) => v.role != 'system')"
+  <!-- 中间信息渲染区域 -->
+  <div class="chatWrap mx-2 overflow-hidden" ref="chatWrap">
+    <ul>
+      <li v-for="item of state.messageList[state.messagesIndex].messages.filter((v) => v.role != 'system')"
         :class="`flex group px-2 py-3 rounded-lg ${item.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`"
         v-if="state.messageList[state.messagesIndex]">
         <div :class="item.role === 'assistant' ? 'order-2 flex flex-col' : 'order-1 flex flex-col'">
           <div class="rounded-full border-2 inline-block w-8 h-8">
-            <img src="../assets/ico/robot.png" class="w-8 mx-auto my-auto rounded-full" v-if="item.role === 'assistant'">
-            <img src="../assets/ico/user.png" class="w-8 mx-auto my-auto rounded-full" v-if="item.role === 'user'">
+            <img src="../assets/ico/robot.png" class="w-8 mx-auto my-auto rounded-full shadow shadow-gray-900"
+              v-if="item.role === 'assistant'">
+            <img src="../assets/ico/user.png" class="w-8 mx-auto my-auto rounded-full shadow shadow-gray-900"
+              v-if="item.role === 'user'">
           </div>
           <span class="mx-auto text-sm h-8">{{ item.role === 'assistant' ? 'Bot' : 'User' }}</span>
         </div>
@@ -34,73 +36,80 @@
           :class="`${item.role !== 'assistant' ? 'order-1 mr-2 ml-4' : 'order-2 ml-2 mr-4'} mt-12 rounded-lg overflow-hidden shadow border-gray-500 shadow-gray-300 p-1`">
           <MdPreview editorId="preview-only" :modelValue="item.content" />
         </div>
+      </li>
+    </ul>
+  </div>
+  <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+  <!-- 底栏部分 -->
+  <div class="footer fixed bottom-1 p-3 bg-gray-100 rounded-2xl mb-1" v-if="!state.isConfig">
+
+    <div class="flex">
+      <input v-model="state.messageContent" class="input flex-1 rounded-2xl h-12 pl-8" type="text" placeholder="Message"
+        @keydown.enter="sendMessage" :disabled="state.isTalking">
+      <button class="btn ml-4 w-20 bg-black rounded-2xl h-12 text-white" @click="sendMessage"
+        :disabled="state.isTalking">{{ state.isTalking ? '⬜️' : '发送' }}</button>
+    </div>
+  </div>
+
+  <div class="sticky bottom-0 w-full p-3 bg-gray-100" v-if="state.isConfig">
+    <h1 class="text-center text-3xl text-black">请先在右上角设置信息</h1>
+  </div>
+  <!-- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+  <!-- 设置弹窗 -->
+  <Dialog v-model:visible="visible" header="编辑信息" :position="position" :modal="true" :draggable="false">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">
+      <h4 class="font-bold text-sm">API填写规范:</h4>
+      <p class="text-sm">https://api.openai.com/v1/chat/completions</p>
+      <p class="text-sm">https://api.openai.com/v1</p>
+      <h4 class="font-bold text-sm">如果你拿到的接口是上面的样子,那么APIhost就填"https://api.openai.com"</h4>
+    </span>
+
+    <div class="flex items-center gap-4 mb-4">
+      <label for="username" class="font-semibold w-24">API host</label>
+      <InputText id="username" class="flex-auto" autocomplete="off" v-model="state.APIhost" />
+    </div>
+
+    <div class="flex items-center gap-4 mb-4">
+      <label for="APIkey" class="font-semibold w-24">API key</label>
+      <InputText id="APIkey" class="flex-auto" autocomplete="off" v-model="state.APIkey" />
+    </div>
+
+    <div class="flex items-center gap-4 mb-8">
+      <label for="APIkey" class="font-semibold w-24">聊天模型</label>
+      <Select v-model="state.model" :options="state.modelList" optionLabel="name" placeholder="选择一个模型"
+        class="flex-auto" />
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <Button type="button" label="取消" severity="secondary" @click="visible = false"></Button>
+      <Button type="button" label="保存" @click="visible = false; saveSet()" class="bg-black"></Button>
+    </div>
+  </Dialog>
+  <!-- ----------------------------------------------------------------------------------------------------------------------------------------- -->
+
+  <!-- 侧边栏 -->
+
+  <Drawer v-model:visible="NavVisible">
+    <template #header>
+      <div class="flex items-center gap-2">
+        <Avatar image="/src/assets/images/avatar.png" class="mr-2" size="xlarge" shape="circle" />
+        <h1 class="font-bold text-3xl">如风雨沐丷</h1>
+      </div>
+    </template>
+
+    <div class="w-full h-1/6 bg-white pb-5">
+      <div class="w-full h-full bg-gray-100 rounded-lg p-2">
+        <p class="text-sm font-bold">听说这里可以写签名！</p>
       </div>
     </div>
-    <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
-    <!-- 底栏部分 -->
-    <div class="sticky bottom-0 w-full p-3 bg-gray-100" v-if="!state.isConfig">
-      <div class="mb-2 text-sm text-gray-500 ml-4">请输入消息内容: </div>
-
-      <div class="flex">
-        <input v-model="state.messageContent" class="input flex-1 rounded-2xl h-12 pl-8" type="text" placeholder="Message"
-          @keydown.enter="sendMessage" :disabled="state.isTalking">
-        <button class="btn ml-4 w-20 bg-black rounded-2xl h-12 text-white" @click="sendMessage"
-          :disabled="state.isTalking">{{ state.isTalking ? '⬜️' : '发送' }}</button>
-      </div>
-    </div>
-
-    <div class="sticky bottom-0 w-full p-3 bg-gray-100" v-if="state.isConfig">
-      <h1 class="text-center text-3xl text-black">请先在右上角设置信息</h1>
-    </div>
-    <!-- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-    <!-- 设置弹窗 -->
-    <Dialog v-model:visible="visible" header="编辑信息" :position="position" :modal="true" :draggable="false">
-      <span class="text-surface-500 dark:text-surface-400 block mb-8">
-        <h4 class="font-bold text-sm">API填写规范:</h4>
-        <p class="text-sm">https://api.openai.com/v1/chat/completions</p>
-        <p class="text-sm">https://api.openai.com/v1</p>
-        <h4 class="font-bold text-sm">如果你拿到的接口是上面的样子,那么APIhost就填"https://api.openai.com"</h4>
-      </span>
-
-      <div class="flex items-center gap-4 mb-4">
-        <label for="username" class="font-semibold w-24">API host</label>
-        <InputText id="username" class="flex-auto" autocomplete="off" v-model="state.APIhost" />
-      </div>
-
-      <div class="flex items-center gap-4 mb-4">
-        <label for="APIkey" class="font-semibold w-24">API key</label>
-        <InputText id="APIkey" class="flex-auto" autocomplete="off" v-model="state.APIkey" />
-      </div>
-
-      <div class="flex items-center gap-4 mb-8">
-        <label for="APIkey" class="font-semibold w-24">聊天模型</label>
-        <Select v-model="state.model" :options="state.modelList" optionLabel="name" placeholder="选择一个模型"
-          class="flex-auto" />
-      </div>
-
-      <div class="flex justify-end gap-2">
-        <Button type="button" label="取消" severity="secondary" @click="visible = false"></Button>
-        <Button type="button" label="保存" @click="visible = false; saveSet()" class="bg-black"></Button>
-      </div>
-    </Dialog>
-    <!-- ----------------------------------------------------------------------------------------------------------------------------------------- -->
-
-    <!-- 侧边栏 -->
-
-    <Drawer v-model:visible="NavVisible">
-      <template #header>
-        <div class="flex items-center gap-2">
-          <Avatar image="/src/assets/images/avatar.png" class="mr-2" size="xlarge" shape="circle" />
-          <h1 class="font-bold text-3xl">如风雨沐丷</h1>
-        </div>
-      </template>
-
-      <div class="container my-5">
-        <div
+    <div class="container h-5/6 overflow-hidden rounded-lg py-2" ref="messagesManger">
+      <ul>
+        <li
           :class="`w-full flex item-center rounded-lg hover:bg-gray-100 px-2 py-2 my-2 cursor-pointer ${i === state.messagesIndex ? 'bg-gray-100' : ''}`"
-          v-for="(item, i) in state.messageList" :key="i" @click="state.messagesIndex = i">
+          v-for="(item, i) in state.messageList" :key="i" @click.stop="state.messagesIndex = i">
 
           <p class="text-black text-sm font-bold flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis pl-2 mr-2 leading-8"
             v-if="!titleChangeStatus">{{ item.title
@@ -111,29 +120,26 @@
             v-if="titleChangeStatus" v-model="item.title" @blur="titleChangeStatus = false">
 
           <span class="text-bold text-sm block w-8 h-8 px-1 py-1 mr-1 hover:bg-gray-200 rounded-lg"
-            @click="titleChangeStatus = true"><img src="../assets/ico/edit.png" alt=""></span>
+            @click.stop="titleChangeStatus = true"><img src="../assets/ico/edit.png" alt=""></span>
           <span class="text-bold text-xl block w-8 h-8 px-1 py-1 hover:bg-rose-200 rounded-lg"
-            @click="deleteMessages(i)"><img src="../assets/ico/delete.png" alt="" class="w-6 h-6"></span>
-        </div>
+            @click.stop="deleteMessages(i)"><img src="../assets/ico/delete.png" alt="" class="w-6 h-6"></span>
+        </li>
+      </ul>
+    </div>
+
+    <template #footer>
+      <div class="flex items-center gap-2">
+        <Button label="新建聊天" class="flex-auto" severity="contrast" @click="newMessages"></Button>
+        <Button label="清空记录" class="flex-auto" text severity="danger" @click.stop="ClearMessageHistory"></Button>
       </div>
+    </template>
+  </Drawer>
 
-      <template #footer>
-        <div class="flex items-center gap-2">
-          <Button label="新建聊天" icon="pi pi-user" class="flex-auto" outlined @click="newMessages"></Button>
-          <Button label="清空记录" icon="pi pi-sign-out" class="flex-auto" severity="danger" @click.stop="ClearMessageHistory"
-            text></Button>
-        </div>
-      </template>
-    </Drawer>
-
-    <!--------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-    <a name="chat"></a>
-  </div>
+  <!--------------------------------------------------------------------------------------------------------------------------------------------- -->
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUpdated, watch } from 'vue'
+import { ref, reactive, onMounted, onUpdated, watch, nextTick } from 'vue'
 // import { chat } from '../libs/gpt'
 import newChat from '../api/chat.js'
 import getLlm from '../api/getLlm.js'
@@ -148,15 +154,29 @@ import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
 import Drawer from 'primevue/drawer'
 import Avatar from 'primevue/avatar'
+// BScroll
+import BScroll from '@better-scroll/core'
+import { getData, postData, updateData } from '../api/data.js'
+
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 侧边栏滚动效果
+let messagesManger = ref(null)
+// 聊天窗口滚动效果
+let chatWrap = ref(null)
+// 设置侧边栏
+const NavVisible = ref(false)
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const state = reactive({
+  id: 1,
   APIhost: '',
   APIkey: '',
   isConfig: true,
   isTalking: false,
   messageContent: '',
   messagesIndex: 0,
+  chatWrapBS: null,
+  chatListWrapBS: null,
   messageList: [],
   model: reactive({
     name: 'gpt-3.5-turbo',
@@ -215,7 +235,6 @@ const state = reactive({
     }
   ]
 })
-
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 onUpdated(() => {
   if (state.APIkey !== '') {
@@ -235,27 +254,74 @@ onUpdated(() => {
 
   if (state.APIkey && state.APIhost) {
     localStorage.setItem("messageList", JSON.stringify(state.messageList))
+
+    const Setting = {
+      model: state.model,
+      messageList: state.messageList,
+      messageIndex: state.messagesIndex
+    }
+
+    const save = debounce(async () => {
+      try {
+        console.log("000000000000000000000000000",state.id);
+        if (state.id !== 1) {
+          await updateData(state.id, state.APIkey, Setting,)
+        } else {
+          state.id = await postData(state.APIkey, Setting).data.id
+          console.log(state.id)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }, 5000)
+
+    save()
   }
 
 })
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-watch(() => state.APIkey, () => {
+watch(() => state.APIkey, async () => {
   const updateAllLlm = debounce(getAllLlm, 1000)
   updateAllLlm()
+  try {
+    const res = await getData(state.APIkey)
+    if (res) {
+      state.messagesIndex = res.data[0].Setting.messageIndex
+      state.model = res.data[0].Setting.model
+      state.messageList = res.data[0].Setting.messageList
+      state.id = res.data[0].id
+      console.log("11111111111111111111100",state.id)
+    }
+    console.log("00000000000000",state.id)
+  } catch (e) {
+    console.log(e)
+  }
 })
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 watch(() => state.messageList[state.messagesIndex], () => {
   const toBottom = debounce(scrollBottom, 1000)
   toBottom()
+  nextTick(() => {
+    ChatWrapBScroll()
+  })
 })
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-watch(() => state.messageList.length, () => {
-  if (state.messageList.length === 0) {
+watch(() => state.messageList.length, (newVal) => {
+  if (newVal === 0) {
     state.messageList.push({ title: "Define Chat", messages: state.defaultList })
   }
-  state.messagesIndex = state.messageList.length - 1
+  nextTick(async () => {
+    await iniTBScroll()
+  })
 })
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+watch(() => NavVisible.value, async (newVal) => {
+  if (newVal) {
+    nextTick(async () => {
+      await iniTBScroll()
+    })
+  }
+})
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 onMounted(async () => {
   if (state.messageList.length === 0) {
@@ -270,10 +336,13 @@ onMounted(async () => {
   if (localStorage.getItem('messageList')) {
     state.messageList = JSON.parse(localStorage.getItem('messageList'))
   }
-  scrollBottom()
-})
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // nextTick(async () => {
+  //   await ChatWrapBScroll()
+  // })
+
+})
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 发送消息
 const sendMessage = async function () {
   const message = state.messageContent.trim()
@@ -284,9 +353,11 @@ const sendMessage = async function () {
         role: 'user',
         content: message
       })
+      nextTick(async () => {
+        await ChatWrapBScroll()
+        scrollBottom()
+      })
 
-      scrollBottom()
-      console.log(state.messagesIndex)
       const data = await newChat(state.messageList[state.messagesIndex].messages.slice(1), state.APIhost, state.APIkey, state.model.name, state.token)
       if (data !== false && data !== '') {
         state.messageList[state.messagesIndex].messages.push({
@@ -303,12 +374,14 @@ const sendMessage = async function () {
     } finally {
       state.isTalking = false
       state.messageContent = ''
-      scrollBottom()
+      nextTick(async () => {
+        await ChatWrapBScroll()
+        scrollBottom()
+      })
     }
   }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 // 获取所有模型
 const getAllLlm = async () => {
   const Data = await getLlm(state.APIhost, state.APIkey)
@@ -320,10 +393,13 @@ const getAllLlm = async () => {
 // 新建聊天
 const newMessages = () => {
   state.messageList.push({ title: "New Chat", messages: state.defaultList })
-  state.messagesIndex = state.messageList.length - 1
+  nextTick(async () => {
+    await iniTBScroll()
+    scrollBottom()
+  })
+  // state.messagesIndex = state.messageList.length - 1
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 // 判断是否填写完整
 const saveSet = () => {
   if (state.APIkey.trim() !== '' && state.APIhost.trim() !== '') {
@@ -337,29 +413,32 @@ const saveSet = () => {
 const ClearMessageHistory = () => {
   localStorage.removeItem("messageList")
   state.messageList = [{ title: "Define Chat", messages: state.defaultList }]
+  nextTick(() => {
+    iniTBScroll()
+  })
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// 设置侧边栏
-const NavVisible = ref(false);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 // 设置弹窗
 const position = ref('center');
 const visible = ref(false);
 
 const openPosition = (pos) => {
-  position.value = pos;
-  visible.value = true;
+  position.value = pos
+  visible.value = true
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 // 滚动到底部
 const scrollBottom = () => {
-  location.hash = 'chat'
-  setTimeout(() => {
-    location.hash = ''
-  }, 100)
+  if (state.chatWrapBS !== null) {
+    state.chatWrapBS.scrollTo(0, state.chatWrapBS.maxScrollY, (state.chatWrapBS.maxScrollY - state.chatWrapBS.y) / 2)
+  }
+}
+//滚动到最上端
+const scrollTop = () => {
+  if (state.chatWrapBS !== null) {
+    state.chatWrapBS.scrollTo(0, state.chatWrapBS.minScrollY, state.chatWrapBS.y / 2)
+  }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 修改聊天标题
@@ -367,13 +446,60 @@ const titleChangeStatus = ref(false)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 删除当前聊天
 const deleteMessages = (i) => {
-  if (i === state.messageList.length - 1) {
-    state.messagesIndex = state.messageList.length - 2
+  nextTick(async () => {
+    if (i === state.messageList.length - 1) {
+      state.messagesIndex = state.messageList.length - 2
+    }
+    state.messageList.splice(i, 1)
+  })
+  nextTick(async () => {
+    await iniTBScroll()
+    scrollTop()
+  })
+}
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 侧边栏滚动优化初始化
+const iniTBScroll = () => {
+  if (messagesManger.value === null) {
+    return
   }
-  state.messageList.splice(i, 1)
+
+  if (state.chatListWrapBS !== null) {
+    state.chatListWrapBS.destroy()
+    // console.log("销毁1");
+  }
+
+  // console.log("初始化1");
+  state.chatListWrapBS = new BScroll(messagesManger.value, {
+    click: true,
+  })
+  // console.log("执行1", messagesManger.value, state.chatListWrapBS);
+  // state.chatListWrapBS.refresh()
+  // console.log("执行结束");
 }
 
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 聊天界面滚动优化初始化
+const ChatWrapBScroll = () => {
+
+  if (chatWrap.value === null) {
+    return
+  }
+
+  if (state.chatWrapBS === null) {
+    // console.log("初始化2");
+    state.chatWrapBS = new BScroll(chatWrap.value, {
+      click: true,
+    })
+  } else {
+    state.chatWrapBS.refresh()
+    // console.log("执行2");
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 </script>
 
 <style lang="css" scoped>
@@ -382,7 +508,21 @@ const deleteMessages = (i) => {
 }
 
 .nav {
-  position: fixed;
-  top: 0;
+  height: 5vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.chatWrap {
+  margin-top: 5vh;
+  height: 86vh;
+  margin-bottom: 9vh;
+}
+
+.footer {
+  width: 95%;
+  height: 8vh;
+  left: 50%;
+  transform: translate(-50%, 0);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 </style>
