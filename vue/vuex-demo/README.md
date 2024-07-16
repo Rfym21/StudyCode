@@ -1,5 +1,19 @@
-# Vue 3 + Vite
+# vuex带来了数据流管理
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+- 小型项目不需要vuex / pinia , 在大型项目中担任专职财务职责 => 管理数据
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+- 为数据流为生
+    - 收归数据流集中管理
+    - 按规则
+
+- npm i vuex
+    插件 install -> use
+
+- 读状态
+    useStore
+    computed  =>  store.state.count
+- 写状态
+    store.dispatch('increment') dispatch 一个 action
+    action 执行一下 最后一定执行 commit  => 提交修改
+    mutation 修改状态
+    state.count++ 值发生改变,所有用到该值的地方全部更新
