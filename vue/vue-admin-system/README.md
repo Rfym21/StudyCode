@@ -52,4 +52,15 @@
 
 - 全局状态设计
     - collapse 状态 true | false
-    - 窄屏的设备适配
+        - 窄屏的设备适配
+    - permiss 权限状态
+        - 跨组件层级访问是常态
+        - key, defineList
+        - defineList 可用于计算
+        - 任何需要权限的地方都可访问调用
+- Object.entries 的用法和应用场景
+    - es6 新增的遍历对象的方法
+    - Object.keys() / Object.values() 基础上将key value 做为一个数组的0,1返回一个二维数组
+    - app.component 全局声明组件的时候一次性的把ElementPlus/icon 全部注册
+    - for of + 展开运算符
+    - ElementPlus 将icons 拆开便于个人与企业开发

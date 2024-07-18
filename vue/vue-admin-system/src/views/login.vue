@@ -77,11 +77,9 @@ const submitForm = (formEl) => {
   formEl.validate((valid) => {
     if (valid) {
       ElMessage.success('登录成功')
-      if (param.username === 'admin') {
-        localStorage.setItem('ms_name', param.username)
-      } else {
-        localStorage.setItem('ms_name', 'user')
-      }
+     localStorage.setItem('ms_name', param.username)
+     const key=permissStore.defaultList[param.username]
+     permissStore.handlePermission(key)
 
       router.push('/')
     } else {

@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { ElMessage } from 'element-plus'
+import {usePermissStore} from '../store/permiss.js'
 
 const routes = [
   {
@@ -84,10 +85,7 @@ router.beforeEach((to, from, next) => {
 
   // 设置页面标题
   const role = localStorage.getItem('ms_name')
-  const permiss = {
-    'admin': ['11', '12'],
-    'user': ['11']
-  }
+  const permissStore = usePermissStore()
 
   document.title = to.meta.title
 
@@ -102,7 +100,7 @@ router.beforeEach((to, from, next) => {
     next('/')
   }
   // 已经登录,并且访问没有权限的网页
-  else if (typeof to.meta.permiss == "string" && !permiss[role].includes(to.meta.permiss)) {
+  else if (typeof to.meta.permiss == "string" && !permissStore.key.includes(to.meta.permiss)) {
     next('/403')
   } else {
     next()

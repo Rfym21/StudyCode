@@ -7,5 +7,12 @@ export const useSidebarStore = defineStore('sidebar', {
       // 侧边栏是否折叠
       isCollapse: false
     }
+  },
+  // 状态属性
+  actions: {
+    // 状态属性的改变
+    handleCollapse() {
+      this.isCollapse = !this.isCollapse
+    }
   }
 })
