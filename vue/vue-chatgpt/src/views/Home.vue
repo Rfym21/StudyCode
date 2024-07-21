@@ -15,6 +15,7 @@
     <!-- <Button :label="state.isConfig ? '登录' : '设置'" @click="openPosition('topright')" size="small"
         class="ml-2 px-2 py-1 text-xs" severity="contrast" outlined /> -->
   </div>
+  <div class="header"></div>
   <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
   <!-- 中间信息渲染区域 -->
@@ -42,6 +43,7 @@
   <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
   <!-- 底栏部分 -->
+  <div class="footer__box"></div>
   <div class="footer fixed bottom-1 p-3 bg-gray-100 rounded-2xl mb-1" v-if="!state.isConfig">
 
     <div class="flex">
@@ -94,7 +96,7 @@
   <Drawer v-model:visible="NavVisible">
     <template #header>
       <div class="flex items-center gap-2">
-        <Avatar image="/src/assets/images/avatar.png" class="mr-2" size="xlarge" shape="circle" />
+        <Avatar image="@/assets/images/avatar.png" class="mr-2" size="xlarge" shape="circle" />
         <h1 class="font-bold text-3xl">如风雨沐丷</h1>
       </div>
     </template>
@@ -169,8 +171,8 @@ const NavVisible = ref(false)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const state = reactive({
   id: 1,
-  APIhost: '',
-  APIkey: '',
+  APIhost: 'https://api.chatmao.org',
+  APIkey: 'sk-yuPiMTMqxgFhwtvv9223847647Ca48Ad8fC26a46E1C495Ff',
   isConfig: true,
   isTalking: false,
   messageContent: '',
@@ -179,8 +181,8 @@ const state = reactive({
   chatListWrapBS: null,
   messageList: [],
   model: reactive({
-    name: 'gpt-3.5-turbo',
-    code: 0
+    name: "GLM-4",
+    code: 9
   }),
   modelList: [],
   defaultList: [
@@ -236,7 +238,65 @@ const state = reactive({
   ]
 })
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-onUpdated(() => {
+onUpdated(debounce(() => {
+
+  if (state.messageList.length === 0) {
+    state.messageList.push({ title: "Define Chat", messages: state.defaultList })
+    state.messagesIndex = 0
+  }
+  nextTick(async () => {
+    await iniTBScroll()
+  })
+
+  if (state.messageList[state.messagesIndex].messages) {
+    const len = state.messageList[state.messagesIndex].messages
+    const maxLen = 128
+    if (len > maxLen) {
+      const newList = state.messageList[state.messagesIndex].messages.slice(len - maxLen / 2 + 1)
+      state.messageList[state.messagesIndex].messages = newList
+    }
+  }
+
+  if (state.APIkey && state.APIhost) {
+    // localStorage.setItem("messageList", JSON.stringify(state.messageList))
+
+    if (state.modelList.length === 0) {
+      getAllLlm()
+    }
+
+    if (state.id === 1) {
+      return
+    }
+    const Setting = {
+      model: state.model,
+      messageList: state.messageList,
+      messageIndex: state.messagesIndex
+    }
+
+    const save = async () => {
+      try {
+        await updateData(state.id, state.APIkey, Setting,)
+      } catch (e) {
+        console.log("更新信息失败: =>", e)
+      }
+    }
+
+    save()
+  }
+
+
+  nextTick(async () => {
+    await ChatWrapBScroll()
+    scrollBottom(state.chatWrapBS)
+  })
+
+}, 1000))
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+watch(() => state.APIkey, () => {
+  getAllLlm()
+
+  getDataInit()
+
   if (state.APIkey !== '') {
     localStorage.setItem("APIkey", state.APIkey)
   }
@@ -245,75 +305,31 @@ onUpdated(() => {
   }
   saveSet()
 
-  const len = state.messageList.length
-  const maxLen = 128
-  if (len > maxLen) {
-    const newList = state.messageList.slice(len - maxLen / 2 + 1)
-    state.messageList = newList
-  }
-
-  if (state.APIkey && state.APIhost) {
-    localStorage.setItem("messageList", JSON.stringify(state.messageList))
-
-    const Setting = {
-      model: state.model,
-      messageList: state.messageList,
-      messageIndex: state.messagesIndex
-    }
-
-    const save = debounce(async () => {
-      try {
-        console.log("000000000000000000000000000",state.id);
-        if (state.id !== 1) {
-          await updateData(state.id, state.APIkey, Setting,)
-        } else {
-          state.id = await postData(state.APIkey, Setting).data.id
-          console.log(state.id)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }, 5000)
-
-    save()
-  }
-
 })
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-watch(() => state.APIkey, async () => {
-  const updateAllLlm = debounce(getAllLlm, 1000)
-  updateAllLlm()
+const getDataInit = async () => {
   try {
     const res = await getData(state.APIkey)
-    if (res) {
-      state.messagesIndex = res.data[0].Setting.messageIndex
-      state.model = res.data[0].Setting.model
-      state.messageList = res.data[0].Setting.messageList
-      state.id = res.data[0].id
-      console.log("11111111111111111111100",state.id)
+    if (res === false) {
+      return
     }
-    console.log("00000000000000",state.id)
+    if (res.length === 0) {
+      state.id = Number(new Date().getTime().toString().slice(3, 9))
+      const data = await postData(state.id, state.APIkey, {
+        model: state.model,
+        messageList: state.messageList,
+        messageIndex: state.messagesIndex
+      })
+    } else {
+      state.messagesIndex = res[0].Setting.messageIndex
+      state.model = res[0].Setting.model
+      state.messageList = res[0].Setting.messageList
+      state.id = res[0].id
+      console.log("当前用户信息: =>", state)
+    }
   } catch (e) {
     console.log(e)
   }
-})
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-watch(() => state.messageList[state.messagesIndex], () => {
-  const toBottom = debounce(scrollBottom, 1000)
-  toBottom()
-  nextTick(() => {
-    ChatWrapBScroll()
-  })
-})
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-watch(() => state.messageList.length, (newVal) => {
-  if (newVal === 0) {
-    state.messageList.push({ title: "Define Chat", messages: state.defaultList })
-  }
-  nextTick(async () => {
-    await iniTBScroll()
-  })
-})
+}
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 watch(() => NavVisible.value, async (newVal) => {
   if (newVal) {
@@ -333,13 +349,8 @@ onMounted(async () => {
     state.APIhost = localStorage.getItem('APIhost')
     state.isConfig = false
   }
-  if (localStorage.getItem('messageList')) {
-    state.messageList = JSON.parse(localStorage.getItem('messageList'))
-  }
 
-  // nextTick(async () => {
-  //   await ChatWrapBScroll()
-  // })
+  getDataInit()
 
 })
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -352,14 +363,17 @@ const sendMessage = async function () {
       state.messageList[state.messagesIndex].messages.push({
         role: 'user',
         content: message
-      })
-      nextTick(async () => {
-        await ChatWrapBScroll()
-        scrollBottom()
-      })
+      },
+        {
+          role: 'assistant',
+          content: '正在思考中...'
+        })
 
       const data = await newChat(state.messageList[state.messagesIndex].messages.slice(1), state.APIhost, state.APIkey, state.model.name, state.token)
       if (data !== false && data !== '') {
+
+        state.messageList[state.messagesIndex].messages.pop()
+
         state.messageList[state.messagesIndex].messages.push({
           role: 'assistant',
           content: data
@@ -367,35 +381,38 @@ const sendMessage = async function () {
         console.log(state.messageList)
       } else {
         state.messageList[state.messagesIndex].messages.pop()
+        state.messageList[state.messagesIndex].messages.pop()
       }
     } catch (e) {
+      state.messageList[state.messagesIndex].messages.pop()
       state.messageList[state.messagesIndex].messages.pop()
       console.log(e)
     } finally {
       state.isTalking = false
       state.messageContent = ''
-      nextTick(async () => {
-        await ChatWrapBScroll()
-        scrollBottom()
-      })
+
     }
   }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 获取所有模型
 const getAllLlm = async () => {
+
   const Data = await getLlm(state.APIhost, state.APIkey)
   if (Data) {
     state.modelList = Data.map((item, index) => ({ name: item, code: index }))
-    state.model = state.modelList[0]
+    if (!Data.includes(state.model.name)) {
+      state.model = state.modelList[0]
+    }
   }
+
 }
 // 新建聊天
 const newMessages = () => {
   state.messageList.push({ title: "New Chat", messages: state.defaultList })
   nextTick(async () => {
     await iniTBScroll()
-    scrollBottom()
+    scrollBottom(state.chatListWrapBS)
   })
   // state.messagesIndex = state.messageList.length - 1
 }
@@ -413,6 +430,7 @@ const saveSet = () => {
 const ClearMessageHistory = () => {
   localStorage.removeItem("messageList")
   state.messageList = [{ title: "Define Chat", messages: state.defaultList }]
+  state.messagesIndex = 0
   nextTick(() => {
     iniTBScroll()
   })
@@ -429,15 +447,17 @@ const openPosition = (pos) => {
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 滚动到底部
-const scrollBottom = () => {
-  if (state.chatWrapBS !== null) {
-    state.chatWrapBS.scrollTo(0, state.chatWrapBS.maxScrollY, (state.chatWrapBS.maxScrollY - state.chatWrapBS.y) / 2)
+const scrollBottom = (obj) => {
+  if (obj !== null) {
+    console.log("底部: =>", obj.maxScrollY, "当前: =>", obj.y, "耗时: =>", `${Math.abs((Math.abs(obj.maxScrollY) - Math.abs(obj.y)) / 2) < 4000 ? (Math.abs(Math.abs(obj.maxScrollY) - Math.abs(obj.y)) / 2) : 4000}ms`)
+    obj.scrollTo(0, obj.maxScrollY, Math.abs(Math.abs(obj.maxScrollY) - Math.abs(obj.y)) / 2)
   }
 }
 //滚动到最上端
-const scrollTop = () => {
-  if (state.chatWrapBS !== null) {
-    state.chatWrapBS.scrollTo(0, state.chatWrapBS.minScrollY, state.chatWrapBS.y / 2)
+const scrollTop = (obj) => {
+  if (obj !== null) {
+    console.log("顶部: =>", obj.minScrollY, "当前: =>", obj.y, "耗时: =>", `${Math.abs((Math.abs(obj.maxScrollY) - Math.abs(obj.y)) / 2) < 4000 ? (Math.abs(Math.abs(obj.maxScrollY) - Math.abs(obj.y)) / 2) : 4000}ms`)
+    obj.scrollTo(0, obj.minScrollY, Math.abs(obj.y / 2))
   }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -454,7 +474,7 @@ const deleteMessages = (i) => {
   })
   nextTick(async () => {
     await iniTBScroll()
-    scrollTop()
+    scrollTop(state.chatListWrapBS)
   })
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -466,19 +486,11 @@ const iniTBScroll = () => {
 
   if (state.chatListWrapBS !== null) {
     state.chatListWrapBS.destroy()
-    // console.log("销毁1");
   }
-
-  // console.log("初始化1");
   state.chatListWrapBS = new BScroll(messagesManger.value, {
     click: true,
   })
-  // console.log("执行1", messagesManger.value, state.chatListWrapBS);
-  // state.chatListWrapBS.refresh()
-  // console.log("执行结束");
 }
-
-
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 聊天界面滚动优化初始化
 const ChatWrapBScroll = () => {
@@ -487,14 +499,15 @@ const ChatWrapBScroll = () => {
     return
   }
 
-  if (state.chatWrapBS === null) {
-    // console.log("初始化2");
-    state.chatWrapBS = new BScroll(chatWrap.value, {
-      click: true,
-    })
-  } else {
+  if (state.chatWrapBS !== null) {
+    // console.log("刷新")
     state.chatWrapBS.refresh()
-    // console.log("执行2");
+    // state.chatWrapBS.destroy()
+  } else {
+    // console.log("初始化")
+    state.chatWrapBS = new BScroll(chatWrap.value, {
+      click: true
+    })
   }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

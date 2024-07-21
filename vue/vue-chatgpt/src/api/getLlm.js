@@ -17,9 +17,10 @@ export default async (APIhost, APIkey) => {
       }
     })
 
-    const data = await res.data.data
+    let data = await res.data.data
     console.log("获取模型列表: =>   ", data)
-    return data.map(item => item.id)
+    data = data.map(element => element.id)
+    return data
   } catch (e) {
     // 如果请求失败，返回false
     console.log("请求失败: =>   ", e)
