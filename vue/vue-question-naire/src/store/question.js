@@ -16,9 +16,19 @@ export const useQuestionStore = defineStore('question', () => {
       })
   }
 
+  function setItemNum() {
+    state.itemNum++
+  }
+
+  function setAnswerList(answer) {
+    state.answerList.push(answer)
+  }
+
   return {
     state,
-    getQuestionList
+    getQuestionList,
+    setItemNum,
+    setAnswerList
   }
 
 })

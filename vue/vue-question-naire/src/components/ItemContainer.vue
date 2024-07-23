@@ -14,11 +14,13 @@
 
       <div class="item_list_container" v-if="state.questionList.length">
 
-        <header class="item_title">{{ state.questionList[0].topic_name }}</header>
+        <header class="item_title">{{ state.questionList[state.itemNum - 1].topic_name }}</header>
 
         <ul>
-          <li class="item_list" v-for="item in state.questionList[0].topic_answer">
-            <span class="option_style">{{ choseType(item.topic_answer_id) }}</span>
+          <li class="item_list" v-for="(item, i) in state.questionList[state.itemNum - 1].topic_answer"
+            @click="choosed(i)">
+            <span :class="`option_style  ${currentNum === i ? 'current' : ''}`">{{ choseType(i)
+            }}</span>
             <span class="option_detail">{{ item.answer_name }}</span>
           </li>
         </ul>
@@ -27,7 +29,8 @@
 
     </div>
 
-    <span class="next_item button_style"></span>
+    <span class="next_item button_style" @click="next" v-if="state.itemNum < state.questionList.length"></span>
+    <span class="submit_item button_style" @click="submit" v-else></span>
   </div>
 </template>
 
@@ -35,6 +38,7 @@
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useQuestionStore } from '../store/question.js'
+import { useRouter } from 'vue-router'
 
 const questionStore = useQuestionStore()
 const { state } = storeToRefs(questionStore)
@@ -44,27 +48,45 @@ const choseType = (index) => {
   switch (index) {
     case 0:
       return 'A'
-      break
     case 1:
       return 'B'
-      break
     case 2:
       return 'C'
-      break
     case 3:
       return 'D'
-      break
     default:
       break
   }
 }
 
 const currentNum = ref(null)
-
+const router = useRouter()
+const choosed = (index) => {
+  currentNum.value = index
+}
 
 defineProps({
   parent: ''
 })
+
+const next = () => {
+  if (currentNum.value === null) {
+    alert('请选择答案')
+    return
+  }
+  questionStore.setAnswerList(currentNum.value)
+  currentNum.value = null
+  questionStore.setItemNum()
+}
+
+const submit = () => {
+  if (currentNum.value === null) {
+    alert('请选择答案')
+    return
+  }
+  questionStore.setAnswerList(currentNum.value)
+  router.push('/score')
+}
 
 </script>
 
