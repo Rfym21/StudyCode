@@ -6,12 +6,16 @@ axios.defaults.baseURL = 'http://localhost:8401'
 // 默认POST响应请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
-// 请求拦截器
-// axios.interceptors.request.use(config => {
-
-// }, error => {
-
-// })
+//请求拦截器
+axios.interceptors.request.use(req => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    req.headers.Authorization = token
+  }
+  return req
+}, error => {
+  showToast(error)
+})
 
 // 响应拦截器
 axios.interceptors.response.use(res => {
@@ -20,7 +24,7 @@ axios.interceptors.response.use(res => {
     // 程序错误
     showToast('服务器异常')
     return Promise.reject(res)
-  } 
+  }
   else if (res.data.code !== 800) {
     // 逻辑错误,并提示错误信息
     showToast(res.data.msg)

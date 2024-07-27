@@ -1,63 +1,64 @@
 <template>
   <div class="login">
-
-    <h1>登录</h1>
+    <h1>注册</h1>
     <div class="login-wrapper">
-      <!-- 头像 -->
       <div class="avatar">
         <img src="../assets/images/avatar.png" alt="">
       </div>
-      <!-- 提交表单 -->
+
       <van-form @submit="onSubmit">
         <van-cell-group inset>
           <van-field v-model="username" name="username" label="用户名" placeholder="用户名"
             :rules="[{ required: true, message: '请填写用户名' }]" />
-
           <van-field v-model="password" type="password" name="password" label="密码" placeholder="密码"
             :rules="[{ required: true, message: '请填写密码' }]" />
+          <van-field v-model="nickname" name="nickname" label="昵称" placeholder="昵称"
+            :rules="[{ required: true, message: '请填写昵称' }]" />
         </van-cell-group>
-        <!-- 提交按钮 -->
         <div style="margin: 16px;">
-          <van-button round block type="primary" native-type="submit">登录</van-button>
+          <van-button round block type="primary" native-type="submit">
+            注册
+          </van-button>
         </div>
       </van-form>
 
     </div>
-    <p class="register" @click="router.push('/register')">新用户?点击注册</p>
+
+    <p class="register" @click="router.push('/login')">已有账号？点击登录</p>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from '../api/index.js'
+import { ref } from 'vue';
+import axios from '@/api'
 import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 
 const username = ref('')
 const password = ref('')
+const nickname = ref('')
 const router = useRouter()
 
-// 登录表单提交事件
 const onSubmit = async (values) => {
-  // 向后端发登录请求验证
-  const res = await axios.post('/user/login', values)
-  localStorage.setItem('userInfo', JSON.stringify(res))
-  localStorage.setItem('token', res.token)
-  showToast(`登陆成功,欢迎 ${res.data.nickname} 回来!`)
-  router.push('/noteClass')
+  const res = await axios.post('/user/register', values)
+  if (res && res.code === 200) {
+    showToast('注册成功')
+    setTimeout(() => {
+      router.push('/login')
+    }, 1500)
+  }
 }
-
 </script>
 
 <style lang="less" scoped>
 .login {
-  position: relative;
   width: 100vw;
   height: 100vh;
   background-color: #fff;
   padding: 0 0.3rem;
   box-sizing: border-box;
   overflow: hidden;
+  position: relative;
 
   h1 {
     height: 0.6933rem;
@@ -66,7 +67,6 @@ const onSubmit = async (values) => {
     line-height: 0.6933rem;
     margin-top: 1.12rem;
     font-weight: 700;
-    overflow: hidden;
   }
 
   .login-wrapper {
@@ -75,15 +75,15 @@ const onSubmit = async (values) => {
     margin: 0 auto;
     margin-top: 1.7rem;
     border-radius: 0.3rem;
-    box-shadow: 0 0 0.533rem rgba(170, 170, 170, 1);
-    padding-bottom: 10px;
+    box-shadow: 0 0 0.533rem 0 rgba(170, 170, 170, 1);
+    padding-bottom: 15px;
 
     .avatar {
       width: 2.4rem;
       height: 2.4rem;
       margin: 1rem auto 0.77rem;
-      overflow: hidden;
       border-radius: 50%;
+      overflow: hidden;
 
       img {
         width: 100%;
@@ -93,14 +93,13 @@ const onSubmit = async (values) => {
 
   .register {
     position: absolute;
-    bottom: 18px;
+    bottom: 30px;
     left: 50%;
-    transform: translate(-50%, 0)
+    transform: translateX(-50%);
   }
-
 }
 
-:deep(.vant-field_label) {
+:deep(.van-field__label) {
   width: 45px;
 }
 </style>
