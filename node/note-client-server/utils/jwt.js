@@ -15,18 +15,20 @@ function sign(option) {
 function verify() {
   return async (ctx, next) => {
     const jwtToken = ctx.req.headers.authorization
-    console.log(jwtToken)
     try {
       if (jwtToken) {
         const decode = jwt.verify(jwtToken, key)
         // token合法
         if (decode.id) {
-          console.log('用户名: =>', decode.username, ' | 昵称: =>', decode.nickname, ' | 访问时间: =>', new Date())
+          console.log('用户名: =>', decode.username, ' | 昵称: =>', decode.nickname, ' | 访问时间: =>', new Date().toString(), ' | 有效Token: =>', jwtToken)
           ctx.userId = decode.id
+          ctx.username = decode.username
+          ctx.nickname = decode.nickname
           await next()
         }
       }
     } catch (err) {
+      console.log('访问时间: =>', new Date(), " | 无效Token: =>", jwtToken)
       ctx.body = {
         code: 809,
         msg: 'token 失效,无权访问!',

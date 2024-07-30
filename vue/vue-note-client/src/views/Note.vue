@@ -2,8 +2,8 @@
   <div class="note-list">
     <ul>
 
-      <li v-for="(item, i) of noteList" :key="i">
-        <div class="img"><img src="" alt=""></div>
+      <li v-for="(item, i) of noteList" :key="i" v-if="noteList.length" @click="goNoteDetail(item)">
+        <div class="img"><img :src="item.head_img" alt=""></div>
         <div class="time">{{ item.m_time }}</div>
         <div class="title">{{ item.title }}</div>
       </li>
@@ -14,10 +14,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from '../api/index.js'
 
 const route = useRoute()
+const router = useRouter()
 const { title } = route.query
 
 const noteList = ref([])
@@ -29,11 +30,12 @@ onMounted(async () => {
       note_type: title
     }
   })
-  noteList.value = res.data
+  res.code === 800 && (noteList.value = res.data)
 })
 
-
-
+const goNoteDetail = (item) => {
+  router.push({ name: 'Detail', params: { id: item.id }, query: { id: item.id, title: item.title } })
+}
 
 </script>
 

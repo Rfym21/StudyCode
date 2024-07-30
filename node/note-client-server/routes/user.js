@@ -11,7 +11,7 @@ router.post('/login', async ctx => {
   try {
     const result = await userLogin(username, password)
 
-    console.log("用户手动登录成功: =>", result[0])
+    console.log("用户主观登录: =>", result[0])
 
     if (result.length) {
       const data = {
@@ -30,14 +30,14 @@ router.post('/login', async ctx => {
       }
     } else {
       ctx.body = {
-        code: 8004,
+        code: 804,
         msg: "登录失败: 用户名或密码错误",
         data: 'error'
       }
     }
   } catch (err) {
     ctx.body = {
-      code: 8005,
+      code: 805,
       msg: "登录失败: 服务器异常",
       data: err
     }

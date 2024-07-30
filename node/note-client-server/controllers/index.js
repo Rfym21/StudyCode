@@ -50,9 +50,25 @@ const findNoteListByType = (note_type, id) => {
   return allService.query(_sql)
 }
 
+// 根据id查找笔记
+const findNoteById = (id) => {
+  const _sql = `select * from note where id="${id}"`
+  return allService.query(_sql)
+}
+
+// 新建笔记
+// 注册
+const notePublish = (values) => {
+  const { userId, nickname, title, head_img, note_type, note_content, c_time, m_time } = values
+  const _sql = `insert into note (userId, nickname, title, head_img, note_type, note_content, c_time, m_time) values ("${userId}", "${nickname}", "${title}", "${head_img}", "${note_type}", "${note_content}", "${c_time}", "${m_time}")`
+  return allService.query(_sql)
+}
+
 module.exports = {
   userLogin,
   userFind,
   userRegister,
-  findNoteListByType
+  findNoteListByType,
+  findNoteById,
+  notePublish
 }

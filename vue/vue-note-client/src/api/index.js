@@ -19,7 +19,9 @@ axios.interceptors.request.use(req => {
 
 // 响应拦截器
 axios.interceptors.response.use(res => {
+
   console.log("响应拦截 => ", res.data)
+
   if (res.status !== 200) {
     // 程序错误
     showToast('服务器异常')
@@ -30,12 +32,17 @@ axios.interceptors.response.use(res => {
       case 809: {
         showToast(res.data.msg)
         localStorage.removeItem('token')
-        window.location.href = '/login'
+        setTimeout(() => {
+          window.location.href = '/login'
+        }, 1000)
         return Promise.reject(res)
       }
       default: {
         // 逻辑错误,并提示错误信息
         res.data.msg && showToast(res.data.msg)
+        setTimeout(() => {
+          window.location.href = '/home'
+        }, 1000)
         return Promise.reject(res)
       }
     }

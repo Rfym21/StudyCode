@@ -41,6 +41,22 @@ const router = createRouter({
       component: () => import('../views/Note.vue')
     },
     {
+      path: '/detail/:id',
+      name: 'Detail',
+      meta: {
+        title: '笔记详情'
+      },
+      component: () => import('../views/Detail.vue')
+    },
+    {
+      path: '/new',
+      name: 'New',
+      meta: {
+        title: '新建笔记'
+      },
+      component: () => import('../views/New.vue')
+    },
+    {
       path: '/:pathMatch(.*)*', // 捕获所有未定义的路径
       redirect: '/home' // 重定向到首页
     }
