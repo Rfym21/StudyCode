@@ -41,11 +41,11 @@ const router = useRouter()
 
 const onSubmit = async (values) => {
   const res = await axios.post('/user/register', values)
-  if (res && res.code === 200) {
+  if (res && res.code === 800) {
     showToast('注册成功')
     setTimeout(() => {
       router.push('/login')
-    }, 1500)
+    }, 800)
   }
 }
 </script>

@@ -1,6 +1,6 @@
 const router = require('@koa/router')()
-const { userLogin, userFind, userRegister } = require('./controllers/index.js')
-const jwt = require('./utils/jwt.js')
+const { userLogin, userFind, userRegister } = require('../controllers/index.js')
+const jwt = require('../utils/jwt.js')
 
 router.prefix('/user')
 // 登录
@@ -11,7 +11,7 @@ router.post('/login', async ctx => {
   try {
     const result = await userLogin(username, password)
 
-    console.log(result)
+    console.log("用户手动登录成功: =>", result[0])
 
     if (result.length) {
       const data = {

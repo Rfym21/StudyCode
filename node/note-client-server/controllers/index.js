@@ -43,8 +43,16 @@ const userRegister = (values) => {
   const _sql = `insert into users (username, password, nickname) values ("${username}", "${password}", "${nickname}")`
   return allService.query(_sql)
 }
+
+// 根据分类查找数据
+const findNoteListByType = (note_type, id) => {
+  const _sql = `select * from note where note_type="${note_type}" and userId="${id}"`
+  return allService.query(_sql)
+}
+
 module.exports = {
   userLogin,
   userFind,
-  userRegister
+  userRegister,
+  findNoteListByType
 }

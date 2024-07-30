@@ -53,7 +53,7 @@
         </p>
 
         <button
-          class="bg-black bg-opacity-80 backdrop-filter backdrop-blur-md text-white rounded-xl px-20 py-2 hover:bg-opacity-50 hover:shadow-lg transition duration-300 focus:outline-none"
+          class="bg-black bg-opacity-80 backdrop-filter backdrop-blur-md text-white rounded-xl px-20 py-2 hover:bg-opacity-50 hover:shadow-lg transition duration-300 focus:outline-none mb-20"
           @click="copy">复制订阅链接
         </button>
       </li>

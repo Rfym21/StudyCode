@@ -41,10 +41,10 @@ const router = useRouter()
 const onSubmit = async (values) => {
   // 向后端发登录请求验证
   const res = await axios.post('/user/login', values)
-  localStorage.setItem('userInfo', JSON.stringify(res))
+  localStorage.setItem('userInfo', JSON.stringify(res.data))
   localStorage.setItem('token', res.token)
   showToast(`登陆成功,欢迎 ${res.data.nickname} 回来!`)
-  router.push('/noteClass')
+  router.push('/home')
 }
 
 </script>

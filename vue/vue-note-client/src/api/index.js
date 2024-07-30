@@ -26,14 +26,21 @@ axios.interceptors.response.use(res => {
     return Promise.reject(res)
   }
   else if (res.data.code !== 800) {
-    // 逻辑错误,并提示错误信息
-    showToast(res.data.msg)
-    return Promise.reject(res)
+    switch (res.data.code) {
+      case 809: {
+        showToast(res.data.msg)
+        localStorage.removeItem('token')
+        window.location.href = '/login'
+        return Promise.reject(res)
+      }
+      default: {
+        // 逻辑错误,并提示错误信息
+        res.data.msg && showToast(res.data.msg)
+        return Promise.reject(res)
+      }
+    }
   }
-
   return res.data
-}, error => {
-
 })
 
 export default axios

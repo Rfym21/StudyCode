@@ -1,7 +1,7 @@
 
 const koa = require('koa')
 const app = new koa()
-const useRouter = require('./user.js')
+const useRouter = require('./routes/index.js')
 const cors = require('@koa/cors')
 const { bodyParser } = require('@koa/bodyparser')
 
@@ -12,5 +12,4 @@ app.listen(8401, () => {
 app.use(cors())
 // 让koa可以解析post请求体
 app.use(bodyParser())
-app.use(useRouter.routes())
-app.use(useRouter.allowedMethods())
+useRouter(app)
