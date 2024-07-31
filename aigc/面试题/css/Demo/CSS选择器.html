@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* #app {
+      color: #ef49ad;
+    }
+
+    .box {
+      color: #b92a0a;
+    }
+
+    #a {
+      color: #fa7e24;
+    }
+
+    .b {
+      color: #bbd6e1;
+    }
+
+    p {
+      color: red;
+    }
+
+    /* 子集选择器 */
+    /* #app .box p {
+      color: #635282;
+    }
+
+    .app .box p {
+      color: #f1f1f1;
+    } */
+
+     /* 后代选择器 */
+    .box>div {
+      color: pink;
+      /* background-color: #fb9308; */
+      height: 30px;
+    }
+
+    /* 兄弟选择器,只选择后者 */
+    .two+.two {
+      color: blue;
+    }
+
+    .one:hover {
+      color: salmon;
+    }
+
+    .one::after {
+      content: 'after';
+      color: #f1f1f1;
+    }
+
+    .one::before {
+      content: 'before';
+      color: #f1f1f1;
+    }
+
+    .two[data-index="1"] {
+      color:#41ae3b;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" class="app">
+
+    <!-- <div class="box">
+      <div id="a" class="b">
+        123
+      <div>789</div>
+      </div>
+
+      <div>456</div>
+    </div> -->
+
+
+    <div class="one">one</div>
+    <div class="two" data-index="1">two1</div>
+    <div class="two">two2</div>
+    <div class="two">two3</div>
+
+  </div>
+</body>
+
+</html>

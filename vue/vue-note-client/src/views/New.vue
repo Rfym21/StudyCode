@@ -30,7 +30,7 @@
       </div>
 
       <div class="btn">
-        <van-button type="primary" block @click="publish">保存笔记</van-button>
+        <van-button type="primary" block @click="publish" :disabled="state.status">保存笔记</van-button>
       </div>
 
     </div>
@@ -42,10 +42,14 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { reactive, ref } from 'vue'
 import axios from '../api/index.js'
+import { showToast } from 'vant'
+import { useRouter } from 'vue-router'
 
 const showPicker = ref(false)
+const router = useRouter()
 
 const state = reactive({
+  status: false,
   content: '',
   title: '',
   img: [],
@@ -66,13 +70,21 @@ const onConfirm = (value) => {
 }
 
 const publish = async () => {
+  state.status = true
   const res = await axios.post('/publish', {
     title: state.title,
     note_content: state.content,
     note_type: state.note_type,
     head_img: state.img.length ? state.img[0].content : '',
   })
-  console.log(res)
+  if (res.code === 800) {
+    console.log(res)
+    showToast(res.msg)
+    setTimeout(() => {
+      router.push('/home')
+    }, 1000)
+  }
+  state.status = false
 }
 </script>
 

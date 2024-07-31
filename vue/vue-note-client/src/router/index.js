@@ -1,5 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { showToast } from 'vant'
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
+import Home from '../views/Home.vue'
+import Note from '../views/Note.vue'
+import Detail from '../views/Detail.vue'
+import New from '../views/New.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +20,7 @@ const router = createRouter({
       meta: {
         title: '登录账号'
       },
-      component: () => import('../views/Login.vue')
+      component: Login
     },
     {
       path: '/register',
@@ -22,7 +28,7 @@ const router = createRouter({
       meta: {
         title: '注册账号'
       },
-      component: () => import('../views/Register.vue')
+      component: Register
     },
     {
       path: '/home',
@@ -30,7 +36,7 @@ const router = createRouter({
       meta: {
         title: '笔记分类'
       },
-      component: () => import('../views/Home.vue')
+      component: Home
     },
     {
       path: '/note/:name',
@@ -38,7 +44,7 @@ const router = createRouter({
       meta: {
         title: '笔记列表'
       },
-      component: () => import('../views/Note.vue')
+      component: Note
     },
     {
       path: '/detail/:id',
@@ -46,7 +52,7 @@ const router = createRouter({
       meta: {
         title: '笔记详情'
       },
-      component: () => import('../views/Detail.vue')
+      component: Detail
     },
     {
       path: '/new',
@@ -54,7 +60,7 @@ const router = createRouter({
       meta: {
         title: '新建笔记'
       },
-      component: () => import('../views/New.vue')
+      component: New
     },
     {
       path: '/:pathMatch(.*)*', // 捕获所有未定义的路径

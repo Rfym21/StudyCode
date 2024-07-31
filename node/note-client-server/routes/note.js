@@ -33,13 +33,32 @@ router.post('/publish', jwt.verify(), async (ctx) => {
   const { title, note_type, head_img, note_content } = ctx.request.body
   // console.log(ctx.request.body)
   const time = formatDate(new Date())
-  try { 
-    const data = await notePublish({ title, note_type, head_img, note_content, userId: ctx.userId, nickname: ctx.nickname, c_time: time, m_time: time }) 
-    console.log('data', data)
-  } catch (err) { 
-    console.log(err); 
+  try {
+    const data = await notePublish({ title, note_type, head_img, note_content, userId: ctx.userId, nickname: ctx.nickname, c_time: time, m_time: time })
+
+    if (res.affectedRows) {
+      ctx.body = {
+        code: 800,
+        msg: "发布成功！",
+        data: 'success'
+      }
+    } else {
+      ctx.body = {
+        code: 804,
+        msg: "注册失败: 服务器异常！",
+        data: 'error'
+      }
+    }
+    console.log(res)
+    return
+  } catch (err) {
+    ctx.body = {
+      code: 805,
+      msg: "发布失败: 服务器异常！",
+      data: err
+    }
   }
-  
+
 })
 
 

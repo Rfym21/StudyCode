@@ -2,7 +2,7 @@ import axios from 'axios'
 import { showToast } from 'vant'
 
 // 默认请求地址
-axios.defaults.baseURL = 'http://localhost:8401'
+axios.defaults.baseURL = 'http://139.9.45.192:8401'
 // 默认POST响应请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
