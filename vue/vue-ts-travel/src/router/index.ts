@@ -6,8 +6,20 @@ const rootRoutes: RouteRecordRaw[] = [
   {
     path: 'home',
     name: 'Home',
-    component: () => import('../views/HomePage/HomePage.vue')
+    meta: {
+      cache: true
+    },
+    component: () => import('../views/Home/Home.vue')
+  },
+  {
+    path: 'discount',
+    name: 'Discount',
+    meta: {
+      cache: false
+    },
+    component: () => import('../views/Discount/Discount.vue')
   }
+
 ]
 
 const routes: RouteRecordRaw[] = [
@@ -17,6 +29,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/TheRoot.vue'),
     redirect: '/home',
     children: rootRoutes
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
   }
 ]
 
