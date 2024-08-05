@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猪猪侠</title>
+</head>
+
+<body>
+
+
+  <script type="module">
+    // nlp transformers.js
+    import {
+      pipeline,
+      env
+    } from 'https://cdn.jsdmirror.com/npm/@xenova/transformers@2.6.0'
+
+    env.allowLocalModel = false
+
+    let pipe=await pipeline('sentiment-analysis')
+  </script>
+</body>
+
+</html>
