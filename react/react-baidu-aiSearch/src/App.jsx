@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import LanguageSelector from './components/LanguageSelector.jsx'
 import './App.css'
+import Progress from './components/Progress.jsx'
 
 const App = () => {
   const [sourceLanguage, setSourceLanguage] = useState('eng_latn')
@@ -17,15 +18,6 @@ const App = () => {
       })
     }
 
-    worker.current.addEventListener('message', (e) => {
-      console.log(e)
-    })
-
-
-    worker.current.postMessage({
-      text: 123
-    })
-
     return () => {
       // 组件销毁时,终止web worker
       // worker.current.terminate()
@@ -39,6 +31,17 @@ const App = () => {
     // 前端加密,压缩,AI处理 => 使用多线程 web worker解决
     // web worker => html5 浏览器提供的多线程解决方案
     // Web Workers 不能直接访问 DOM，也不能使用 window 对象。它们只能通过 postMessage 和 onmessage 方法来发送和接收消息
+    worker.current.postMessage({
+      text: 123
+    })
+
+
+    worker.current.addEventListener('message', (e) => {
+      console.log(e)
+      
+      setDisabled(false)
+    })
+
   }
 
   return (
@@ -68,6 +71,9 @@ const App = () => {
       </div >
 
       <button disabled={disabled} onClick={translate}>翻译</button>
+
+
+      <Progress text='LLM' percentage={20} />
     </>
   )
 

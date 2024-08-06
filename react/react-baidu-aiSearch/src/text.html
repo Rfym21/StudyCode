@@ -19,7 +19,14 @@
 
     env.allowLocalModel = false
 
-    let pipe=await pipeline('sentiment-analysis')
+    const translator = await pipeline('translation', 'Xenova/nllb-200-distilled-600M');
+    const output = await translator('你干嘛啊', {
+      src_lang: 'hin_Deva', // Hindi
+      tgt_lang: 'fra_Latn', // French
+    })
+
+    console.log(output)
+    
   </script>
 </body>
 
