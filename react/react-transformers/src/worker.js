@@ -28,10 +28,23 @@ class MyTranslationPipeline {
 
 self.addEventListener('message', async (event) => {
   let translator = await MyTranslationPipeline.getInstance(x => {
-    console.log(x)
     self.postMessage(x)
   })
-  self.postMessage({
-    text: "完成"
+
+  let output = await translator(event.data.text, {
+    tgt_lang: event.data.tgt_lang,
+    src_lang: event.data.src_lang,
+    callback: (res) => {
+      self.postMessage({
+        status: 'update',
+        output: translator.tokenizer.decode(res[0].output_token_ids, { skip_special_tokens: true })
+      })
+    }
   })
+
+  self.postMessage({
+    status: 'complete',
+    output: output
+  })
+
 })

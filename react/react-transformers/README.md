@@ -49,3 +49,17 @@
     2. worker不做DOM编程
     3. 实例化 new Worker(new URL('.worker.js'),{type:'module'})
     4. 消息机制完成,主线程和worker之间的通信
+
+- 介绍项目小作文
+  - 本项目基于React + Transformer.js => 实现了AI翻译功能
+  - 端模型可以在多种设备上进行运行
+  - 使用了web worker进行性能优化,带来了良好的用户体验 =>
+      1. AI功能耗时长,耗能大选择 -> web worker多线程方案
+      2. 主线程和worker线程提供消息机制通信
+  - 定制了两个组件 =>
+      1. LanguageSelector组件
+      2. Progress组件
+  - hook函数 =>
+      1. useState
+      2. useEffect
+      3. useRef
