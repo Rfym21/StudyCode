@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <link rel="stylesheet" href="http://localhost:3000/style.css"> -->
+</head>
+
+<body>
+
+  <img src="https://vip.helloimg.com/i/2024/08/02/66ac65a76abeb.jpg" alt="">
+
+  <!-- <script src="https://localhost:3000/script.js"></script> -->
+
+  <!-- 
+  <script>
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', 'http://localhost:3000')
+    xhr.send();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        console.log(xhr.responseText)
+
+      }
+    }
+  </script>
+  -->
+
+  <!-- <script src="http://localhost:3000"></script> -->
+
+  <script>
+    function jsonp(url,callback) {
+      return new Promise((resolve, reject) => {
+        // 创建一个 script 标签
+        const script = document.createElement('script')
+
+        window['cb']=function(data){
+         console.log(data)
+        }
+
+        script.src = `${url}?cb=${callback}`
+        console.log(script.src)
+        
+        document.body.appendChild(script)
+
+      })
+    }
+
+    jsonp('http://localhost:3000','callback').then(data => {
+      console.log(data)
+    })
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <ul>
+      <li v-for="i in list">{{i}}</li>
+    </ul>
+  </div>
+  <script>
+    let app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          list: [1, 2, 3, 4, 5]
+        }
+      },
+      methods: {
+        handle() {
+          console.log('handle')
+          this.list.push(6)
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
