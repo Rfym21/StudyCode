@@ -6,7 +6,8 @@
 </template>
 
 <script>
-import { reactive} from 'vue'
+import { reactive } from './reactivity/reactive.js'
+import { effect } from './reactivity/effect.js'
 
 export default {
   setup() {
@@ -20,8 +21,12 @@ export default {
 
 
     const changeName = () => {
-      state.data.name = '李四'
+      state.msg = 'ngm'
     }
+
+    effect(() => {
+      console.log('effect', state.msg[0])
+    })
 
     return {
       state,

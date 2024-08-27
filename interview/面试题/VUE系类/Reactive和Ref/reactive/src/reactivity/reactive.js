@@ -22,13 +22,15 @@ function createReactiveObject(target, proxyMap, proxyHandlers) {
   }
 
   // 如果已经代理过，直接返回代理对象
-  const existingProxy = proxyMap.get(target, proxyHandlers)
+  const existingProxy = proxyMap.get(target)
   if (existingProxy) {
     return existingProxy
   }
 
   // 创建代理对象
-  const proxy = new Proxy(target)
+  console.log(target)
+
+  const proxy = new Proxy(target, proxyHandlers)
   proxyMap.set(target, proxy)
 
   return proxy
