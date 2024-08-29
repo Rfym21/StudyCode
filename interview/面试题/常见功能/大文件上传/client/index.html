@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+</head>
+
+<body>
+  <input type="file" id="input">
+  <button id="btn">上传</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const input = document.getElementById('input')
+    const btn = document.getElementById('btn')
+
+    let fileObj = null
+
+    const handleChange = (e) => {
+      console.log(e.target.files)
+      const [file] = e.target.files
+      fileObj = file
+    }
+
+    const createChunk = (file, size = 5 * 1024 * 1024) => {
+      const chunkLIst = []
+      let cur = 0
+      while (cur < file.size) {
+
+        const formData = new FormData()
+        formData.append('file', file.slice(cur, cur + size))
+        formData.append('filName', file.name)
+        formData.append('chunkName', `${file.name} - ${cur / size}`)
+        chunkLIst.push({
+          formData,
+          index: (cur / size),
+          size: file.size,
+          percent: (cur / file.size)
+        })
+        cur += size
+      }
+
+      return chunkLIst
+    }
+
+    const uploadChunks = (chunks) => {
+      const requestList = chunks.map(({ formData, index, size, percent }) => {
+        return axios.post('http://localhost:8401/upload', formData, () => {
+          console.log(`第${index}块上传成功`)
+        })
+      })
+
+      Promise.all(requestList).then(() => {
+        console.log('所有块上传成功')
+      })
+
+    }
+
+    const handleUpload = () => {
+      if (!fileObj) {
+        return
+      }
+
+      const chunkLIst = createChunk(fileObj)
+      uploadChunks(chunkLIst)
+
+    }
+    btn.addEventListener('click', handleUpload)
+    input.addEventListener('change', handleChange)
+  </script>
+</body>
+
+</html>
