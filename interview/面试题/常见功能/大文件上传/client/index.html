@@ -19,12 +19,14 @@
 
     let fileObj = null
 
+    // 获取文件
     const handleChange = (e) => {
       console.log(e.target.files)
       const [file] = e.target.files
       fileObj = file
     }
 
+    // 创建切片
     const createChunk = (file, size = 5 * 1024 * 1024) => {
       const chunkLIst = []
       let cur = 0
@@ -32,7 +34,7 @@
 
         const formData = new FormData()
         formData.append('file', file.slice(cur, cur + size))
-        formData.append('filName', file.name)
+        formData.append('fileName', file.name)
         formData.append('chunkName', `${file.name} - ${cur / size}`)
         chunkLIst.push({
           formData,
@@ -46,6 +48,7 @@
       return chunkLIst
     }
 
+    // 上传分片
     const uploadChunks = (chunks) => {
       const requestList = chunks.map(({ formData, index, size, percent }) => {
         return axios.post('http://localhost:8401/upload', formData, () => {
@@ -55,10 +58,11 @@
 
       Promise.all(requestList).then(() => {
         console.log('所有块上传成功')
+        
       })
-
     }
 
+    // 上传文件逻辑
     const handleUpload = () => {
       if (!fileObj) {
         return
@@ -68,6 +72,17 @@
       uploadChunks(chunkLIst)
 
     }
+
+    // 发送合并文件请求
+    function mergeChunks(size = 5 * 1024 * 1024) {
+      axios.post('http://localhost:8401/merge', {
+        fileName: fileObj.name,
+        size
+      }).then(() => {
+        console.log('发送合并请求成功！')
+      })
+    }
+
     btn.addEventListener('click', handleUpload)
     input.addEventListener('change', handleChange)
   </script>
