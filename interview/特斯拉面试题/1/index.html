@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <table>
+    <tbody>
+      <tr>
+        <td>李二</td>
+        <td>2024-10-01</td>
+        <td>2024-10-29</td>
+      </tr>
+      <tr style="background-color: red;">
+        <td>张三</td>
+        <td>2024-10-01</td>
+        <td>2024-10-10</td>
+      </tr>
+      <tr style="background-color: red;">
+        <td>李四</td>
+        <td>2024-10-01</td>
+        <td>2024-10-20</td>
+      </tr>
+      <tr>
+        <td>王五</td>
+        <td>2024-10-10</td>
+        <td>2024-10-18</td>
+      </tr>
+      <tr>
+        <td>赵六</td>
+        <td>2024-10-09</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    const countOverDates = (today, limit, DOM) => {
+      // console.log(DOM)
+
+      // 处理时间
+      const currentDate = new Date(today)
+
+      let rows = DOM.getElementsByTagName('tr')
+      let errorCount = 0
+
+      Array.from(rows).forEach(row => {
+        let cells = row.querySelectorAll('td')
+
+        if (cells.length !== 3) {
+          return
+        }
+
+        let startDate = cells[1].textContent.trim()
+        let endDate = cells[2].textContent.trim()
+        // console.log(startDate, endDate)
+
+        // 如果开始日期为空，则跳过
+        if (!startDate) {
+          return
+        } else {
+          startDate = new Date(startDate)
+        }
+
+        if (endDate) {
+          endDate = new Date(endDate)
+        }
+
+        // 计算最迟归还日期
+        const lastReturnDate = new Date(startDate.getTime() + limit * 24 * 60 * 60 * 1000)
+        // 获取背景色
+        const backgroundColor = row.style.backgroundColor
+        // console.log(backgroundColor)
+
+        // 计算时间差
+        if (endDate) {
+          // 如果有归还日期
+          if (endDate > lastReturnDate && backgroundColor !== 'red') {
+            // 如果归还时间大于最迟归还日期，并且背景色不是红色，则错误
+            errorCount++
+          } else if (endDate <= lastReturnDate && backgroundColor === 'red') {
+            // 如果归还时间小于等于最迟归还日期，但是背景色是红色，则错误
+            errorCount++
+          }
+        } else {
+          // 如果没有归还日期，
+          if (currentDate > lastReturnDate && backgroundColor !== 'red') {
+            // 如果当前日期大于最迟归还日期，但是背景色不是红色，则错误
+            errorCount++
+          } else if (currentDate <= lastReturnDate && backgroundColor === 'red') {
+            // 如果当前日期小于等于最迟归还日期，但是背景色是红色，则错误
+            errorCount++
+          }
+        }
+
+      })
+
+      return errorCount
+    }
+
+    const DOM = document.getElementsByTagName('table')[0]
+    /* 
+        DOMparser()
+        parserFromString()
+    */
+    console.log(countOverDates('2024-10-28', 14, DOM))
+
+  </script>
+</body>
+
+</html>
