@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin: 64px auto;
+} 
+
+.response-container {
+  width: 80%;
+  margin: 64px auto;
+}
+
+.input-textarea {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 16px;
+}
+
+.input-button {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.response-textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 720px;
+}
+
+
