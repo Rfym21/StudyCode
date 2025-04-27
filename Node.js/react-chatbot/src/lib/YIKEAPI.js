@@ -9,9 +9,9 @@ class YikeAPI {
     this.apiUrl = process.env.baseUrl
   }
 
-  async completions(prompt) {
+  async completions(messages) {
 
-    if (!prompt) {
+    if (!messages) {
       return {
         status: 400,
         response: "Prompt is required"
@@ -20,14 +20,9 @@ class YikeAPI {
 
     try{
     const response = await axios.post(`${this.apiUrl}/chat/completions`, {
-      model: "Sourcegraph/claude-3-7-sonnet-latest",
+      model: "Zijie/deepseek-reasoner",
       stream: false,
-      messages: [
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
+      messages: messages,
       max_tokens: 4096,
       thinking: true
     }, {
